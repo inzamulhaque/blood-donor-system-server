@@ -1,7 +1,28 @@
 import { model, Schema } from "mongoose";
 
 import { BLOOD_GROUPS, UPOZILAS_PABNA } from "./donor.constant";
-import type { IDonor } from "./donor.interface";
+import type { IBlockStatus, IDonor } from "./donor.interface";
+
+const blockStatusSchema = new Schema<IBlockStatus>(
+  {
+    isBlocked: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    blockReason: {
+      type: String,
+    },
+
+    blockedBy: {
+      type: Number,
+      ref: "Admin",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const donorSchema = new Schema<IDonor>(
   {
@@ -54,9 +75,8 @@ const donorSchema = new Schema<IDonor>(
       enum: ["active", "inactive"],
       default: "active",
     },
-    isBlocked: {
-      type: Boolean,
-      default: false,
+    blockStatus: {
+      type: blockStatusSchema,
     },
     isDeleted: {
       type: Boolean,

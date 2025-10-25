@@ -1,5 +1,11 @@
 import type { BLOOD_GROUPS, UPOZILAS_PABNA } from "./donor.constant";
 
+export interface IBlockStatus {
+  isBlocked: boolean;
+  blockReason?: string;
+  blockedBy?: number;
+}
+
 export interface IDonor {
   name: string;
   email?: string;
@@ -11,7 +17,7 @@ export interface IDonor {
   lastDonoteDate?: Date;
   accountVisibility?: "public" | "private";
   accountStatus?: "active" | "inactive";
-  isBlocked?: boolean;
+  blockStatus?: IBlockStatus;
   isDeleted?: boolean;
 }
 

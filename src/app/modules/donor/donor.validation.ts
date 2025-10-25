@@ -29,7 +29,11 @@ export const DonorValidationSchema = z.object({
 
     accountStatus: z.enum(["active", "inactive"]).default("active"),
 
-    isBlocked: z.boolean().default(false),
+    blockStatus: z.object({
+      isBlocked: z.boolean().default(false),
+      blockReason: z.string().optional(),
+      blockedBy: z.number().optional(),
+    }),
 
     isDeleted: z.boolean().default(false),
   }),
