@@ -34,6 +34,7 @@ const donorSchema = new Schema<IDonor>(
     email: {
       type: String,
       trim: true,
+      unique: true,
       lowercase: true,
     },
     phoneNumber: {
