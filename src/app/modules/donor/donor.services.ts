@@ -3,7 +3,7 @@ import httpStatus from "http-status";
 import type { IDonor } from "./donor.interface";
 import Donor from "./donor.model";
 
-const createNewDonorService = async (payload: IDonor) => {
+export const addNewDonorService = async (payload: IDonor) => {
   const isDonorExist = await Donor.findOne({
     phoneNumber: payload.phoneNumber,
   });
