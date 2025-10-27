@@ -3,7 +3,7 @@ import { model, Schema } from "mongoose";
 import { BLOOD_GROUPS, UPOZILAS_PABNA } from "./donor.constant";
 import type { IBlockStatus, IDonor } from "./donor.interface";
 
-const blockStatusSchema = new Schema<IBlockStatus>(
+export const blockStatusSchema = new Schema<IBlockStatus>(
   {
     isBlocked: {
       type: Boolean,
