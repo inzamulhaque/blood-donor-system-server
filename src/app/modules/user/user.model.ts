@@ -60,7 +60,10 @@ const userSchema = new Schema<IUser>(
 userSchema.pre("save", async function (next) {
   const user = this;
 
-  user.password = await bcrypt.hash(user.password, config.BCRYPT_SALT_ROUNDS);
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.BCRYPT_SALT_ROUNDS)
+  );
 
   next();
 });

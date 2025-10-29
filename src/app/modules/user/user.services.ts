@@ -6,6 +6,7 @@ import User from "./user.model";
 import httpStatus from "http-status";
 import { UserTrackingNumber } from "./user.utils";
 import mongoose from "mongoose";
+import config from "../../../config";
 
 export const createNewDonorService = async (
   payload: IUser & Partial<IDonor>
@@ -23,38 +24,45 @@ export const createNewDonorService = async (
     phoneNumber: payload.phoneNumber,
   });
 
-  if (donorExistingWithPhone.length > 0) {
-    donorExistingWithPhone.forEach((donor) => {
-      if (!donor.isDeleted) {
-        Donor.updateOne(
-          { phoneNumber: payload.phoneNumber },
-          { isDeleted: true }
-        );
-      }
+  const session = await mongoose.startSession();
+
+  try {
+    await session.startTransaction();
+
+    if (donorExistingWithPhone.length > 0) {
+      donorExistingWithPhone.forEach((donor) => {
+        if (!donor.isDeleted) {
+          Donor.updateOne(
+            { phoneNumber: payload.phoneNumber },
+            { isDeleted: true }
+          );
+        }
+      });
+    }
+
+    const trackingNumber = await UserTrackingNumber();
+    payload.trackingNumber = trackingNumber;
+
+    const newUser = await User.create({
+      ...payload,
+      role: "donor",
+      accountStatus: "inactive",
     });
 
-    const session = await mongoose.startSession();
+    const newDonor = await Donor.create({ ...payload, availability: false });
 
-    try {
-      await session.startTransaction();
+    await session.commitTransaction();
+    await session.endSession();
 
-      const trackingNumber = await UserTrackingNumber();
-      payload.trackingNumber = trackingNumber;
+    const { password, ...restData } = newUser.toObject();
 
-      const newUser = await User.create({ ...payload, role: "donor" });
-      const newDonor = await Donor.create(payload);
+    //   console.log({ newUser, newDonor });
 
-      await session.commitTransaction();
-      await session.endSession();
+    return { user: restData, donor: newDonor };
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
 
-      const { password, ...restData } = newUser.toObject();
-
-      return { user: restData, donor: newDonor };
-    } catch (error: any) {
-      await session.abortTransaction();
-      await session.endSession();
-
-      throw new Error(error);
-    }
+    throw new Error(error);
   }
 };
