@@ -34,13 +34,11 @@ const donorSchema = new Schema<IDonor>(
     email: {
       type: String,
       trim: true,
-      unique: true,
       lowercase: true,
     },
     phoneNumber: {
       type: String,
       required: [true, "Phone number is required"],
-      unique: true,
     },
     bloodGroup: {
       type: String,
@@ -58,10 +56,10 @@ const donorSchema = new Schema<IDonor>(
     },
     trackingNumber: {
       type: Number,
-      required: [true, "Tracking number is required"],
       unique: true,
       minlength: 6,
       maxlength: 6,
+      ref: "User",
     },
     lastDonoteDate: {
       type: Date,
@@ -71,10 +69,9 @@ const donorSchema = new Schema<IDonor>(
       enum: ["public", "private"],
       default: "public",
     },
-    accountStatus: {
-      type: String,
-      enum: ["active", "inactive"],
-      default: "active",
+    availability: {
+      type: Boolean,
+      default: true,
     },
     blockStatus: {
       type: blockStatusSchema,

@@ -37,16 +37,13 @@ const userSchema = new Schema<IUser>(
       required: [true, "User role is required"],
       default: "donor",
     },
-    accountVisibility: {
-      type: String,
-      enum: ["public", "private"],
-      default: "public",
-    },
+
     accountStatus: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",
     },
+
     blockStatus: {
       type: blockStatusSchema,
     },

@@ -31,12 +31,7 @@ export const DonorValidationSchema = z.object({
 
     lastDonoteDate: z.date().optional(),
 
-    accountVisibility: z
-      .enum(["public", "private"])
-      .default("public")
-      .optional(),
-
-    accountStatus: z.enum(["active", "inactive"]).default("active").optional(),
+    availability: z.boolean().default(true).optional(),
 
     blockStatus: BlockStatusValidationSchema.optional(),
 

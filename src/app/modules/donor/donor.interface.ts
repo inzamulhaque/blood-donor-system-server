@@ -16,7 +16,7 @@ export interface IDonor {
   trackingNumber: number;
   lastDonoteDate?: Date;
   accountVisibility?: "public" | "private";
-  accountStatus?: "active" | "inactive";
+  availability?: boolean;
   blockStatus?: IBlockStatus;
   isDeleted?: boolean;
 }
