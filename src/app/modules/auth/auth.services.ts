@@ -4,7 +4,7 @@ import httpStatus from "http-status";
 import bcrypt from "bcrypt";
 import type { ISignin } from "./auth.interface";
 
-const signinService = async (credentials: ISignin) => {
+export const signinService = async (credentials: ISignin) => {
   const user = await User.findOne({
     email: credentials.email,
     isDeleted: false,
