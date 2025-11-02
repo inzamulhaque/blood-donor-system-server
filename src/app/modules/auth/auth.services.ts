@@ -3,6 +3,8 @@ import User from "../user/user.model";
 import httpStatus from "http-status";
 import bcrypt from "bcrypt";
 import type { ISignin } from "./auth.interface";
+import { createToken } from "./auth.utils";
+import config from "../../../config";
 
 export const signinService = async (credentials: ISignin) => {
   const user = await User.findOne({
@@ -37,5 +39,26 @@ export const signinService = async (credentials: ISignin) => {
     throw new AppError(httpStatus.UNAUTHORIZED, "Invalid password!");
   }
 
-  return user;
+  const token = createToken(
+    {
+      trackingNumber: user.trackingNumber,
+      role: user.role,
+    },
+    config.JWT_ACCESS_SECRET,
+    config.JWT_ACCESS_EXPIRES_IN
+  );
+
+  const refreshToken = createToken(
+    {
+      trackingNumber: user.trackingNumber,
+      role: user.role,
+    },
+    config.JWT_REFRESH_SECRET,
+    config.JWT_REFRESH_EXPIRES_IN
+  );
+
+  return {
+    token,
+    refreshToken,
+  };
 };
