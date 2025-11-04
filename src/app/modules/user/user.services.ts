@@ -128,20 +128,31 @@ export const createNewFinderService = async (payload: IUser) => {
 export const getMeService = async (payload: JwtPayload) => {
   const user = await User.findOne({
     trackingNumber: payload.trackingNumber,
-  }).select("-password");
+  })
+    .select("-password -_id")
+    .lean();
 
   if (!user) {
     throw new AppError(httpStatus.BAD_REQUEST, "User not found!");
   }
 
-  let otherInfo;
+  let otherInfo: any = {};
 
   if (user?.role === "donor") {
-    otherInfo = Donor.findOne({ trackingNumber: payload.trackingNumber });
+    otherInfo = await Donor.findOne({
+      trackingNumber: payload.trackingNumber,
+      isDeleted: false,
+    })
+      .select("-_id")
+      .lean();
   }
 
   if (user?.role === "finder") {
-    otherInfo = Finder.findOne({ trackingNumber: payload.trackingNumber });
+    otherInfo = await Finder.findOne({
+      trackingNumber: payload.trackingNumber,
+    })
+      .select("-_id")
+      .lean();
   }
 
   return { ...user, ...otherInfo };
