@@ -6,7 +6,6 @@ import User from "./user.model";
 import httpStatus from "http-status";
 import { UserTrackingNumber } from "./user.utils";
 import mongoose from "mongoose";
-import config from "../../../config";
 
 export const createNewDonorService = async (
   payload: IUser & Partial<IDonor>
@@ -59,6 +58,40 @@ export const createNewDonorService = async (
     //   console.log({ newUser, newDonor });
 
     return { user: restData, donor: newDonor };
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    throw new Error(error);
+  }
+};
+
+export const createNewFinderService = async (payload: IUser) => {
+  const existingUser = await User.findOne({ email: payload.email });
+
+  if (existingUser) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      "User with this email already exists!"
+    );
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    await session.startTransaction();
+
+    const trackingNumber = await UserTrackingNumber();
+    payload.trackingNumber = trackingNumber;
+
+    const newUser = await User.create({ ...payload, role: "finder" });
+    const newFinder = await User.create(payload);
+    await session.commitTransaction();
+    await session.endSession();
+
+    const { password, ...restData } = newUser.toObject();
+
+    return { user: restData, finder: newFinder };
   } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();

@@ -36,7 +36,10 @@ export const UserValidationSchema = z.object({
       .default("public")
       .optional(),
 
-    accountStatus: z.enum(["active", "inactive"]).default("active").optional(),
+    accountStatus: z
+      .enum(["active", "inactive"])
+      .default("inactive")
+      .optional(),
 
     blockStatus: BlockStatusValidationSchema.optional(),
 
