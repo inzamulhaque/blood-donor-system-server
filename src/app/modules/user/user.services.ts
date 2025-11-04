@@ -7,6 +7,7 @@ import httpStatus from "http-status";
 import { UserTrackingNumber } from "./user.utils";
 import mongoose from "mongoose";
 import Finder from "../finder/finder.model";
+import type { JwtPayload } from "jsonwebtoken";
 
 export const createNewDonorService = async (
   payload: IUser & Partial<IDonor>
@@ -122,4 +123,26 @@ export const createNewFinderService = async (payload: IUser) => {
 
     throw new Error(error);
   }
+};
+
+export const getMeService = async (payload: JwtPayload) => {
+  const user = await User.findOne({
+    trackingNumber: payload.trackingNumber,
+  }).select("-password");
+
+  if (!user) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User not found!");
+  }
+
+  let otherInfo;
+
+  if (user?.role === "donor") {
+    otherInfo = Donor.findOne({ trackingNumber: payload.trackingNumber });
+  }
+
+  if (user?.role === "finder") {
+    otherInfo = Finder.findOne({ trackingNumber: payload.trackingNumber });
+  }
+
+  return { ...user, ...otherInfo };
 };
