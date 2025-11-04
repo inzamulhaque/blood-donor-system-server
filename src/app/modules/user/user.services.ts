@@ -27,8 +27,7 @@ export const createNewDonorService = async (
   const session = await mongoose.startSession();
 
   try {
-    await session.startTransaction();
-
+    session.startTransaction();
     if (donorExistingWithPhone.length > 0) {
       donorExistingWithPhone.forEach((donor) => {
         if (!donor.isDeleted) {
@@ -43,20 +42,33 @@ export const createNewDonorService = async (
     const trackingNumber = await UserTrackingNumber();
     payload.trackingNumber = trackingNumber;
 
-    const newUser = await User.create({
-      ...payload,
-      role: "donor",
-      accountStatus: "inactive",
-    });
+    const newUser = await User.create(
+      [
+        {
+          ...payload,
+          role: "donor",
+          accountStatus: "inactive",
+        },
+      ],
+      { session }
+    );
 
-    const newDonor = await Donor.create({ ...payload, availability: false });
+    const newDonor = await Donor.create([{ ...payload, availability: false }], {
+      session,
+    });
 
     await session.commitTransaction();
     await session.endSession();
 
-    const { password, ...restData } = newUser.toObject();
+    const createdUser = newUser[0];
+    if (!createdUser) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        "Failed to create user!"
+      );
+    }
 
-    //   console.log({ newUser, newDonor });
+    const { password, ...restData } = createdUser.toObject();
 
     return { user: restData, donor: newDonor };
   } catch (error: any) {
@@ -80,19 +92,30 @@ export const createNewFinderService = async (payload: IUser) => {
   const session = await mongoose.startSession();
 
   try {
-    await session.startTransaction();
-
+    session.startTransaction();
     const trackingNumber = await UserTrackingNumber();
     payload.trackingNumber = trackingNumber;
 
-    const newUser = await User.create({ ...payload, role: "finder" });
-    const newFinder = await Finder.create(payload);
+    const newUser = await User.create([{ ...payload, role: "finder" }], {
+      session,
+    });
+    const newFinder = await Finder.create([payload], { session });
     await session.commitTransaction();
     await session.endSession();
 
-    const { password, ...restData } = newUser.toObject();
+    const createdUser = newUser[0];
+    if (!createdUser) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        "Failed to create user!"
+      );
+    }
 
-    return { user: restData, finder: newFinder };
+    const { password, ...restData } = createdUser.toObject();
+
+    const createdFinder = newFinder[0] ?? newFinder;
+
+    return { user: restData, finder: createdFinder };
   } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
