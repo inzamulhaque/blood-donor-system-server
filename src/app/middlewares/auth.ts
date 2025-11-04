@@ -32,6 +32,10 @@ const auth = (...requiredRoles: TUserRole[]) =>
 
     const { trackingNumber, role } = decoded;
 
+    if (requiredRoles && !requiredRoles.includes(role)) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized!");
+    }
+
     const user = await User.findOne({ trackingNumber, role });
 
     if (!user) {
