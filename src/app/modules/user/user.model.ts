@@ -41,7 +41,7 @@ const userSchema = new Schema<IUser>(
     accountStatus: {
       type: String,
       enum: ["active", "inactive"],
-      default: "active",
+      default: "inactive",
     },
 
     blockStatus: {

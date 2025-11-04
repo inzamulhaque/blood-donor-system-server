@@ -6,6 +6,7 @@ import User from "./user.model";
 import httpStatus from "http-status";
 import { UserTrackingNumber } from "./user.utils";
 import mongoose from "mongoose";
+import Finder from "../finder/finder.model";
 
 export const createNewDonorService = async (
   payload: IUser & Partial<IDonor>
@@ -85,7 +86,7 @@ export const createNewFinderService = async (payload: IUser) => {
     payload.trackingNumber = trackingNumber;
 
     const newUser = await User.create({ ...payload, role: "finder" });
-    const newFinder = await User.create(payload);
+    const newFinder = await Finder.create(payload);
     await session.commitTransaction();
     await session.endSession();
 
