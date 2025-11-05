@@ -1,7 +1,7 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
-import { signinService } from "./auth.services";
+import { changePasswordService, signinService } from "./auth.services";
 import config from "../../../config";
 
 export const signin = catchAsync(async (req, res) => {
@@ -19,5 +19,19 @@ export const signin = catchAsync(async (req, res) => {
     success: true,
     message: "User is logged in successfully!",
     data: { token },
+  });
+});
+
+export const changePassword = catchAsync(async (req, res) => {
+  const trackingNumber = req.user?.trackingNumber;
+  const payload = { ...req.body, trackingNumber };
+
+  const result = await changePasswordService(payload);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password changed successfully!",
+    data: result,
   });
 });
