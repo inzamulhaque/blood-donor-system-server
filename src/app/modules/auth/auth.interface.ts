@@ -10,5 +10,5 @@ export interface IOldPassword {
 
 export interface IOTPVerification {
   otp: string;
-  trackingNumber: string;
+  trackingNumber: number;
 }

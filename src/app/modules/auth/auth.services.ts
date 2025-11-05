@@ -89,12 +89,12 @@ export const changePasswordService = async (payload: {
     throw new AppError(httpStatus.UNAUTHORIZED, "Old password is incorrect!");
   }
 
-  const oldNadNewPasswordSame = await bcrypt.compare(
+  const oldAndNewPasswordSame = await bcrypt.compare(
     payload.newPassword,
     user.password
   );
 
-  if (oldNadNewPasswordSame) {
+  if (oldAndNewPasswordSame) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       "New password must be different from the old password!"
@@ -102,7 +102,7 @@ export const changePasswordService = async (payload: {
   }
 
   const haveOldPassword = await OldPassword.findOne({
-    trackingNumber: payload.trackingNumber,
+    trackingNumber: String(payload.trackingNumber),
   });
 
   const isPasswordusedBefore = haveOldPassword
@@ -124,22 +124,16 @@ export const changePasswordService = async (payload: {
     session.startTransaction();
 
     const updatedPassword = await user.updateOne(
-      [
-        {
-          trackingNumber: payload.trackingNumber,
-        },
-        {
-          password: hashedNewPassword,
-        },
-      ],
+      { $set: { password: hashedNewPassword } },
       { session }
     );
 
-    await OldPassword.deleteOne([{ trackingNumber: payload.trackingNumber }], {
-      session,
-    });
+    await OldPassword.deleteOne(
+      { trackingNumber: payload.trackingNumber },
+      { session }
+    );
 
-    const oldPasswordRecord = await OldPassword.create(
+    await OldPassword.create(
       [
         {
           trackingNumber: payload.trackingNumber,
