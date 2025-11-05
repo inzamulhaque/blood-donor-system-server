@@ -9,6 +9,7 @@ const oldPasswordSchema = new Schema<IOldPassword>(
     },
     trackingNumber: {
       type: String,
+      unique: false,
       required: true,
       ref: "User",
     },

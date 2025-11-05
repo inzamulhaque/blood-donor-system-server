@@ -5,6 +5,9 @@ import bcrypt from "bcrypt";
 import type { ISignin } from "./auth.interface";
 import { createToken } from "./auth.utils";
 import config from "../../../config";
+import { OldPassword } from "./auth.model";
+import mongoose from "mongoose";
+import { log } from "node:console";
 
 export const signinService = async (credentials: ISignin) => {
   const user = await User.findOne({
@@ -61,4 +64,110 @@ export const signinService = async (credentials: ISignin) => {
     token,
     refreshToken,
   };
+};
+
+export const changePasswordService = async (payload: {
+  trackingNumber: number;
+  oldPassword: string;
+  newPassword: string;
+}) => {
+  const user = await User.findOne({
+    trackingNumber: payload.trackingNumber,
+    isDeleted: false,
+  });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+  }
+
+  const isOldPasswordValid = await bcrypt.compare(
+    payload.oldPassword,
+    user.password
+  );
+
+  if (!isOldPasswordValid) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Old password is incorrect!");
+  }
+
+  const oldNadNewPasswordSame = await bcrypt.compare(
+    payload.newPassword,
+    user.password
+  );
+
+  if (oldNadNewPasswordSame) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "New password must be different from the old password!"
+    );
+  }
+
+  const haveOldPassword = await OldPassword.findOne({
+    trackingNumber: payload.trackingNumber,
+  });
+
+  const isPasswordusedBefore = haveOldPassword
+    ? await bcrypt.compare(payload.newPassword, haveOldPassword.oldPassword)
+    : false;
+
+  if (isPasswordusedBefore) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You cannot use a previously used password. Please choose a different password!"
+    );
+  }
+
+  const hashedNewPassword = await bcrypt.hash(payload.newPassword, 10);
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    const updatedPassword = await user.updateOne(
+      [
+        {
+          trackingNumber: payload.trackingNumber,
+        },
+        {
+          password: hashedNewPassword,
+        },
+      ],
+      { session }
+    );
+
+    await OldPassword.deleteOne([{ trackingNumber: payload.trackingNumber }], {
+      session,
+    });
+
+    const oldPasswordRecord = await OldPassword.create(
+      [
+        {
+          trackingNumber: payload.trackingNumber,
+          oldPassword: user.password,
+        },
+      ],
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    if (updatedPassword.modifiedCount === 0) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        "Failed to update password!"
+      );
+    }
+
+    return {
+      userName: user.name,
+      email: user.email,
+      message: "Password changed successfully!",
+    };
+  } catch (error: any) {
+    session.abortTransaction();
+    session.endSession();
+
+    console.log(error);
+  }
 };
