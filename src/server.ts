@@ -2,10 +2,13 @@ import { Server } from "http";
 import app from "./app";
 import config from "./config/index";
 import mongoose from "mongoose";
+import seedSuperAndMainAdmin from "./app/DB";
 
 async function main() {
   try {
     await mongoose.connect(config.DATABASE_URL as string);
+
+    seedSuperAndMainAdmin();
 
     const server: Server = app.listen(config.PORT, () => {
       console.log(`http://localhost:${config.PORT}`);
