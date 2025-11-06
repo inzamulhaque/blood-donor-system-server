@@ -14,4 +14,19 @@ export default {
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
   JWT_ACCESS_EXPIRES_IN: process.env.JWT_ACCESS_EXPIRES_IN,
   JWT_REFRESH_EXPIRES_IN: process.env.JWT_REFRESH_EXPIRES_IN,
+  SUPER_ADMIN: {
+    name: process.env.SUPER_ADMIN_NAME,
+    email: process.env.SUPER_ADMIN_EMAIL,
+    password: process.env.SUPER_ADMIN_PASSWORD,
+    role: process.env.SUPER_ADMIN_ROLE,
+    trackingNumber: process.env.SUPER_ADMIN_TRACKING_NUMBER,
+  },
+
+  MAIN_ADMIN: {
+    name: process.env.MAIN_ADMIN_NAME,
+    email: process.env.MAIN_ADMIN_EMAIL,
+    password: process.env.MAIN_ADMIN_PASSWORD,
+    role: process.env.MAIN_ADMIN_ROLE,
+    trackingNumber: process.env.MAIN_ADMIN_TRACKING_NUMBER,
+  },
 };
