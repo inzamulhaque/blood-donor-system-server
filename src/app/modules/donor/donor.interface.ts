@@ -1,4 +1,4 @@
-import type { Date } from "mongoose";
+import type { Date, ObjectId } from "mongoose";
 import type { BLOOD_GROUPS, UPOZILAS_PABNA } from "./donor.constant";
 
 export interface IBlockStatus {
@@ -22,9 +22,9 @@ export interface IDonor {
   isDeleted?: boolean;
 }
 
-export interface IdonateDate {
+export interface IDonateDate {
   date: Date;
-  trackingNumber: number;
+  donorId: ObjectId;
   note: string;
 }
 
