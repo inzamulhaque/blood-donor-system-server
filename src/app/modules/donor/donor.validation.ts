@@ -39,4 +39,19 @@ export const DonorValidationSchema = z.object({
   }),
 });
 
+export const DonateDateValidationSchema = z.object({
+  body: z.object({
+    date: z
+      .preprocess(
+        (val) => (val ? new Date(val as any) : val),
+        z.date({ error: "Donation date is required" })
+      )
+      .refine((d) => d instanceof Date && !isNaN(d.getTime()), {
+        message: "Invalid date format",
+      }),
+
+    note: z.string().trim().optional(),
+  }),
+});
+
 export type DonorValidationType = z.infer<typeof DonorValidationSchema>;

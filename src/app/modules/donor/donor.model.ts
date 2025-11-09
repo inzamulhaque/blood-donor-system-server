@@ -86,21 +86,26 @@ const donorSchema = new Schema<IDonor>(
   }
 );
 
-const donateDateSchema = new Schema<IDonateDate>({
-  date: {
-    type: Date,
-    required: [true, "Donation date is required"],
+const donateDateSchema = new Schema<IDonateDate>(
+  {
+    date: {
+      type: Date,
+      required: [true, "Donation date is required"],
+    },
+    donorId: {
+      type: Schema.Types.ObjectId,
+      ref: "Donor",
+      required: [true, "Donor ID is required"],
+    },
+    note: {
+      type: String,
+      trim: true,
+    },
   },
-  donorId: {
-    type: Schema.Types.ObjectId,
-    ref: "Donor",
-    required: [true, "Donor ID is required"],
-  },
-  note: {
-    type: String,
-    trim: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const Donor = model<IDonor>("Donor", donorSchema);
 export const DonateDate = model<IDonateDate>("DonateDate", donateDateSchema);
