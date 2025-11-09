@@ -1,11 +1,22 @@
 import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
-import { DonorValidationSchema } from "./donor.validation";
-import { addNewDonor } from "./donor.controller";
+import {
+  DonateDateValidationSchema,
+  DonorValidationSchema,
+} from "./donor.validation";
+import { addNewDonor, adDonateDate } from "./donor.controller";
+import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
 router.post("/add-donor", validateRequest(DonorValidationSchema), addNewDonor);
+
+router.post(
+  "/donate-date",
+  auth("admin", "donor"),
+  validateRequest(DonateDateValidationSchema),
+  adDonateDate
+);
 
 const DonorRoutes = router;
 export default DonorRoutes;

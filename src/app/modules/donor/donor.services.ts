@@ -1,6 +1,6 @@
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
-import type { IDonor } from "./donor.interface";
+import type { IDonateDate, IDonor } from "./donor.interface";
 import Donor from "./donor.model";
 
 export const addNewDonorService = async (payload: IDonor) => {
@@ -15,3 +15,8 @@ export const addNewDonorService = async (payload: IDonor) => {
   const result = await Donor.create(payload);
   return result;
 };
+
+export const addDonateDateService = async (
+  payload: Partial<IDonateDate>,
+  trackingNumber: number
+) => {};
