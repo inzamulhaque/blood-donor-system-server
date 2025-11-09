@@ -1,6 +1,12 @@
 import z from "zod";
-import { BlockStatusValidationSchema } from "../donor/donor.validation";
+
 import { roles } from "./user.constant";
+
+export const BlockStatusValidationSchema = z.object({
+  isBlocked: z.boolean().default(false).optional(),
+  blockReason: z.string().optional(),
+  blockedBy: z.number().optional(),
+});
 
 export const UserValidationSchema = z.object({
   body: z.object({

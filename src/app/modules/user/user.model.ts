@@ -1,9 +1,30 @@
 import bcrypt from "bcrypt";
 import { model, Schema } from "mongoose";
-import type { IUser } from "./user.interface";
-import { blockStatusSchema } from "../donor/donor.model";
+import type { IBlockStatus, IUser } from "./user.interface";
+
 import { roles } from "./user.constant";
 import config from "../../../config";
+
+export const blockStatusSchema = new Schema<IBlockStatus>(
+  {
+    isBlocked: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    blockReason: {
+      type: String,
+    },
+
+    blockedBy: {
+      type: Number,
+      ref: "Admin",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const userSchema = new Schema<IUser>(
   {

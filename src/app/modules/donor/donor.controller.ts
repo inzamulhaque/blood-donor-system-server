@@ -16,7 +16,9 @@ export const addNewDonor = catchAsync(async (req, res) => {
 
 export const adDonateDate = catchAsync(async (req, res) => {
   const trackingNumber = (req.user as any)?.trackingNumber;
+
   const result = await addDonateDateService(req.body, trackingNumber);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

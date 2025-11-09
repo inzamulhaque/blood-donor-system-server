@@ -4,12 +4,6 @@ import { BLOOD_GROUPS, UPOZILAS_PABNA } from "./donor.constant";
 export const BloodGroupEnum = z.enum(BLOOD_GROUPS);
 export const UpozilaEnum = z.enum(UPOZILAS_PABNA);
 
-export const BlockStatusValidationSchema = z.object({
-  isBlocked: z.boolean().default(false).optional(),
-  blockReason: z.string().optional(),
-  blockedBy: z.number().optional(),
-});
-
 export const DonorValidationSchema = z.object({
   body: z.object({
     name: z
@@ -32,8 +26,6 @@ export const DonorValidationSchema = z.object({
     lastDonoteDate: z.date().optional(),
 
     availability: z.boolean().default(true).optional(),
-
-    blockStatus: BlockStatusValidationSchema.optional(),
 
     isDeleted: z.boolean().default(false).optional(),
   }),

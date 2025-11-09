@@ -19,4 +19,11 @@ export const addNewDonorService = async (payload: IDonor) => {
 export const addDonateDateService = async (
   payload: Partial<IDonateDate>,
   trackingNumber: number
-) => {};
+) => {
+  const donor = await Donor.findOne({
+    trackingNumber: String(trackingNumber),
+    isDeleted: false,
+  });
+
+  console.log(donor);
+};
