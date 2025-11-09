@@ -18,7 +18,7 @@ export interface IDonor {
 export interface IDonateDate {
   date: Date;
   donorId: ObjectId;
-  note: string;
+  note?: string;
 }
 
 export type TBloodGroup = (typeof BLOOD_GROUPS)[number];
