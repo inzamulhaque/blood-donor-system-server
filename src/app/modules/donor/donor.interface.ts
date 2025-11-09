@@ -1,3 +1,4 @@
+import type { Date } from "mongoose";
 import type { BLOOD_GROUPS, UPOZILAS_PABNA } from "./donor.constant";
 
 export interface IBlockStatus {
@@ -19,6 +20,12 @@ export interface IDonor {
   availability?: boolean;
   blockStatus?: IBlockStatus;
   isDeleted?: boolean;
+}
+
+export interface IdonateDate {
+  date: Date;
+  trackingNumber: number;
+  note: string;
 }
 
 export type TBloodGroup = (typeof BLOOD_GROUPS)[number];
