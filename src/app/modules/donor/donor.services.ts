@@ -97,7 +97,7 @@ export const addDonateDateService = async (
       [
         {
           $set: {
-            lastDonoteDate: newLastDonateDate,
+            lastDonateDate: newLastDonateDate,
             availability: readyForDonate,
           },
         },
