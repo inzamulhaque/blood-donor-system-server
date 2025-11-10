@@ -21,27 +21,38 @@ export const addDonateDateService = async (
   payload: { date: string; note?: string },
   trackingNumber: number
 ) => {
+  // find donor
   const donor = await Donor.findOne({
     trackingNumber,
     isDeleted: false,
   });
 
-  const [day, month, year] = payload?.date?.split("-");
+  // validated donor found or not
+  if (!donor) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Donor not found!");
+  }
 
+  // today date
   const now = new Date();
 
+  const [day, month, year] = payload?.date?.split("-");
+
+  // donate date
   const donateDate = new Date(`${year}-${month}-${day}`);
 
   const diffInMs = now.getTime() - donateDate.getTime();
 
+  // different between today and donate date
   const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
 
   const readyForDonate: boolean = diffInDays >= 90;
 
-  const lastDonateDate = donor?.lastDonateDate;
+  // last donate date from DB
+  const lastDonateDate = donor?.lastDonateDate || donateDate;
 
   let newLastDonateDate;
 
+  // calculate new last donate date from compare DB last donate date and input last donate date
   if (lastDonateDate) {
     const lastDonateTime =
       lastDonateDate instanceof Date
@@ -60,7 +71,7 @@ export const addDonateDateService = async (
   const session = await mongoose.startSession();
 
   try {
-    session.startTransaction();
+    await session.startTransaction();
 
     await donor?.updateOne(
       [
@@ -76,19 +87,24 @@ export const addDonateDateService = async (
       }
     );
 
-    const addDonateDate = await DonateDate.create({
-      donorId: donor?._id,
-      date: donateDate,
-      note: payload?.note,
-    });
+    const addDonateDate = await DonateDate.create(
+      [
+        {
+          donorId: donor?._id,
+          date: donateDate,
+          note: payload?.note,
+        },
+      ],
+      { session }
+    );
 
-    session.commitTransaction();
-    session.endSession();
+    await session.commitTransaction();
+    await session.endSession();
 
     return addDonateDate;
   } catch (error: any) {
-    session.abortTransaction();
-    session.endSession();
+    await session.abortTransaction();
+    await session.endSession();
 
     console.log(error);
   }
