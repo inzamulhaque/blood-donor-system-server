@@ -40,10 +40,30 @@ export const addDonateDateService = async (
   // donate date
   const donateDate = new Date(`${year}-${month}-${day}`);
 
+  // this date already exist in DB
+  const findInDB = await DonateDate.findOne({
+    date: donateDate,
+  });
+
+  if (findInDB) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "This date already exists in the database!"
+    );
+  }
+
   const diffInMs = now.getTime() - donateDate.getTime();
 
   // different between today and donate date
   const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+  // validation date for not adding advance date
+  if (diffInDays <= 0) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You are not able to add an advance date!"
+    );
+  }
 
   const readyForDonate: boolean = diffInDays >= 90;
 
