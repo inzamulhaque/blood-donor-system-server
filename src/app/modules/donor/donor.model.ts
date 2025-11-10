@@ -40,7 +40,7 @@ const donorSchema = new Schema<IDonor>(
       maxlength: 6,
       ref: "User",
     },
-    lastDonoteDate: {
+    lastDonateDate: {
       type: Date,
     },
     accountVisibility: {

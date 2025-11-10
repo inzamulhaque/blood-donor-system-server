@@ -23,7 +23,7 @@ export const DonorValidationSchema = z.object({
 
     addedBy: z.number().optional(),
 
-    lastDonoteDate: z.date().optional(),
+    lastDonateDate: z.date().optional(),
 
     availability: z.boolean().default(true).optional(),
 

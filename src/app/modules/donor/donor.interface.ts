@@ -9,7 +9,7 @@ export interface IDonor {
   upozila: TUpozila;
   addedBy?: number;
   trackingNumber: number;
-  lastDonoteDate?: Date;
+  lastDonateDate?: Date;
   accountVisibility?: "public" | "private";
   availability?: boolean;
   isDeleted?: boolean;

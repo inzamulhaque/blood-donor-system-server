@@ -38,23 +38,23 @@ export const addDonateDateService = async (
 
   const readyForDonate: boolean = diffInDays >= 90;
 
-  const lastDonoteDate = donor?.lastDonoteDate;
+  const lastDonateDate = donor?.lastDonateDate;
 
-  let newLastDonoteDate;
+  let newLastDonateDate;
 
-  if (lastDonoteDate) {
-    const lastDonoteTime =
-      lastDonoteDate instanceof Date
-        ? lastDonoteDate.getTime()
-        : new Date(lastDonoteDate as any).getTime();
+  if (lastDonateDate) {
+    const lastDonateTime =
+      lastDonateDate instanceof Date
+        ? lastDonateDate.getTime()
+        : new Date(lastDonateDate as any).getTime();
 
-    if (lastDonoteTime < donateDate.getTime()) {
-      newLastDonoteDate = donateDate;
+    if (lastDonateTime < donateDate.getTime()) {
+      newLastDonateDate = donateDate;
     } else {
-      newLastDonoteDate = lastDonoteDate;
+      newLastDonateDate = lastDonateDate;
     }
   } else {
-    newLastDonoteDate = donateDate;
+    newLastDonateDate = donateDate;
   }
 
   const session = await mongoose.startSession();
@@ -66,7 +66,7 @@ export const addDonateDateService = async (
       [
         {
           $set: {
-            lastDonoteDate: newLastDonoteDate,
+            lastDonoteDate: newLastDonateDate,
             availability: readyForDonate,
           },
         },
