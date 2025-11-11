@@ -129,3 +129,19 @@ export const addDonateDateService = async (
     console.log(error);
   }
 };
+
+export const getMyDonateDateListService = async (trackingNumber: number) => {
+  const donor = await Donor.findOne({
+    trackingNumber,
+  });
+
+  if (!donor) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Donor not found!");
+  }
+
+  const donateDates = await DonateDate.find({
+    donorId: donor._id,
+  });
+
+  return donateDates;
+};

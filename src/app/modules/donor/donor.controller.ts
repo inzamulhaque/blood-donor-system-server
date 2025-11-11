@@ -1,7 +1,11 @@
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { addDonateDateService, addNewDonorService } from "./donor.services";
+import {
+  addDonateDateService,
+  addNewDonorService,
+  getMyDonateDateListService,
+} from "./donor.services";
 
 export const addNewDonor = catchAsync(async (req, res) => {
   const payload = req.body;
@@ -23,6 +27,18 @@ export const adDonateDate = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Donate date added successfully!",
+    data: result,
+  });
+});
+
+export const getMyDonateDateList = catchAsync(async (req, res) => {
+  const trackingNumber = (req.user as any)?.trackingNumber;
+  const result = await getMyDonateDateListService(trackingNumber);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Donate date list fetched successfully!",
     data: result,
   });
 });
