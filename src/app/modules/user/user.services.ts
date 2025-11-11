@@ -1,5 +1,5 @@
 import AppError from "../../errors/AppError";
-import type { IDonor } from "../donor/donor.interface";
+import type { IDonor, TUpozila } from "../donor/donor.interface";
 import Donor from "../donor/donor.model";
 import type { IUser } from "./user.interface";
 import User from "./user.model";
@@ -156,4 +156,63 @@ export const getMeService = async (payload: JwtPayload) => {
   }
 
   return { ...user, ...otherInfo };
+};
+
+export const updateUserService = async (
+  payload: { name?: string; upozila?: TUpozila },
+  trackingNumber: number
+) => {
+  const user = await User.findOne({
+    trackingNumber,
+  });
+
+  if (!user) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "User not found!");
+  }
+
+  let otherData: any;
+
+  if (user.role === "donor" || user.role === "admin") {
+    otherData = await Donor.findOne({
+      trackingNumber: user.trackingNumber,
+    });
+  }
+
+  if (user.role === "finder") {
+    otherData = await Finder.findOne({
+      trackingNumber: user.trackingNumber,
+    });
+  }
+
+  const session = await mongoose.startSession();
+  try {
+    await session.startTransaction();
+    await user.updateOne(
+      {
+        $set: {
+          ...payload,
+        },
+      },
+      { session }
+    );
+
+    const updatedData = await otherData.updateOne(
+      {
+        $set: {
+          ...payload,
+        },
+      },
+      { new: true, session }
+    );
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return updatedData;
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    console.log(error);
+  }
 };

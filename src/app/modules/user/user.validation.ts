@@ -1,6 +1,7 @@
 import z from "zod";
 
 import { roles } from "./user.constant";
+import { UpozilaEnum } from "../donor/donor.validation";
 
 export const BlockStatusValidationSchema = z.object({
   isBlocked: z.boolean().default(false).optional(),
@@ -50,5 +51,18 @@ export const UserValidationSchema = z.object({
     blockStatus: BlockStatusValidationSchema.optional(),
 
     isDeleted: z.boolean().default(false).optional(),
+  }),
+});
+
+export const UpdateUserValidationSchema = z.object({
+  body: z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, { message: "User name is required" })
+      .min(2, { message: "Name must be at least 2 characters long" })
+      .optional(),
+
+    upozila: UpozilaEnum.optional(),
   }),
 });

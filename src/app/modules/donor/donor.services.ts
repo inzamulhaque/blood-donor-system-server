@@ -1,6 +1,6 @@
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
-import type { IDonateDate, IDonor } from "./donor.interface";
+import type { IDonor } from "./donor.interface";
 import Donor, { DonateDate } from "./donor.model";
 import mongoose from "mongoose";
 

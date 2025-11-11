@@ -1,7 +1,15 @@
 import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
-import { UserValidationSchema } from "./user.validation";
-import { createNewDonor, createNewFinder, getMe } from "./user.controller";
+import {
+  UpdateUserValidationSchema,
+  UserValidationSchema,
+} from "./user.validation";
+import {
+  createNewDonor,
+  createNewFinder,
+  getMe,
+  updateUser,
+} from "./user.controller";
 import auth from "../../middlewares/auth";
 
 const router = express.Router();
@@ -22,6 +30,13 @@ router.get(
   "/me",
   auth("super-admin", "main-admin", "admin", "donor", "finder"),
   getMe
+);
+
+router.patch(
+  "/update",
+  auth("admin", "donor", "finder"),
+  validateRequest(UpdateUserValidationSchema),
+  updateUser
 );
 
 const UserRouters = router;

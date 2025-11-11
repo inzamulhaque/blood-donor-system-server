@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post("/signin", validateRequest(SignInValidationSchema), signin);
 
-router.post(
+router.patch(
   "/change-password",
   auth("super-admin", "main-admin", "admin", "donor", "finder"),
   validateRequest(ChangePasswordValidationSchema),
