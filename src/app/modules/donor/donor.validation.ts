@@ -45,5 +45,3 @@ export const DonateDateValidationSchema = z.object({
     note: z.string().trim().optional(),
   }),
 });
-
-export type DonorValidationType = z.infer<typeof DonorValidationSchema>;
