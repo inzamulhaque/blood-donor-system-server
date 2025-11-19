@@ -1,13 +1,18 @@
 import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 import User from "../user/user.model";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { searchableFields } from "./admin.constant";
 
-export const getAllUserService = async () => {
-  const users = await User.find();
+export const getAllUserService = async (query: Record<string, unknown>) => {
+  const users = new QueryBuilder(User.find(), query)
+    .search(searchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
-  if (!users) {
-    throw new AppError(httpStatus.NOT_FOUND, "No users found!");
-  }
+  const result = await users.modelQuery;
 
-  return users;
+  return result;
 };

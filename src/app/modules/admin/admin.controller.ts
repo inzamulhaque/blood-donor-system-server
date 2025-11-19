@@ -4,7 +4,9 @@ import httpsStatus from "http-status";
 import { getAllUserService } from "./admin.services";
 
 export const getAllUser = catchAsync(async (req, res) => {
-  const result = await getAllUserService();
+  const { query } = req;
+
+  const result = await getAllUserService(query);
 
   sendResponse(res, {
     statusCode: httpsStatus.OK,
