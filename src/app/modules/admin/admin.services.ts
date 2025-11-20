@@ -17,7 +17,7 @@ export const getAllUserService = async (query: Record<string, unknown>) => {
   return result;
 };
 
-export const changeUserRoleService = async (userEmail: string) => {
+export const changeDonorRoleToAdminService = async (userEmail: string) => {
   const user = await User.findOne({ email: userEmail });
 
   if (!user) {
