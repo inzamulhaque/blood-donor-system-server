@@ -16,3 +16,25 @@ export const getAllUserService = async (query: Record<string, unknown>) => {
 
   return result;
 };
+
+export const changeUserRoleService = async (userEmail: string) => {
+  const user = await User.findOne({ email: userEmail });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+  }
+
+  if (user.role !== "donor") {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Only donor role can be changed to admin!"
+    );
+  }
+
+  const updated = await user.updateOne(
+    { $set: { role: "admin" } },
+    { new: true }
+  );
+
+  return updated;
+};
