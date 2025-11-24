@@ -14,7 +14,9 @@ export const getAllUserService = async (query: Record<string, unknown>) => {
 
   const result = await users.modelQuery;
 
-  return result;
+  const meta = await users.countTotal();
+
+  return { meta, result };
 };
 
 export const changeDonorRoleToAdminService = async (userEmail: string) => {
@@ -48,7 +50,7 @@ export const getAllDonorService = async (query: Record<string, unknown>) => {
     .fields();
 
   const result = await donor.modelQuery;
-  const mata = await donor.countTotal();
+  const meta = await donor.countTotal();
 
-  return { mata, result };
+  return { meta, result };
 };

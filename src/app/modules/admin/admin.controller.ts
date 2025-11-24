@@ -6,12 +6,13 @@ import { getAllDonorService, getAllUserService } from "./admin.services";
 export const getAllUser = catchAsync(async (req, res) => {
   const { query } = req;
 
-  const result = await getAllUserService(query);
+  const { meta, result } = await getAllUserService(query);
 
   sendResponse(res, {
     statusCode: httpsStatus.OK,
     success: true,
     message: "Get all user successfully!",
+    meta,
     data: result,
   });
 });
@@ -19,12 +20,13 @@ export const getAllUser = catchAsync(async (req, res) => {
 export const getAllDonor = catchAsync(async (req, res) => {
   const { query } = req;
 
-  const result = await getAllDonorService(query);
+  const { meta, result } = await getAllDonorService(query);
 
   sendResponse(res, {
     statusCode: httpsStatus.OK,
     success: true,
     message: "Get all donor successfully!",
+    meta: meta,
     data: result,
   });
 });
