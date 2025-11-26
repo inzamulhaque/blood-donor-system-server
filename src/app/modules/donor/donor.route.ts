@@ -13,7 +13,12 @@ import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
-router.post("/add-donor", validateRequest(DonorValidationSchema), addNewDonor);
+router.post(
+  "/add-donor",
+  auth("main-admin", "admin"),
+  validateRequest(DonorValidationSchema),
+  addNewDonor
+);
 
 router.post(
   "/donate-date",
