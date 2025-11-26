@@ -7,3 +7,9 @@ export const FindDonorValidationSchema = z.object({
     upozila: UpozilaEnum,
   }),
 });
+
+export const FinderToDonorValidationSchema = z.object({
+  body: z.object({
+    bloodGroup: BloodGroupEnum,
+  }),
+});

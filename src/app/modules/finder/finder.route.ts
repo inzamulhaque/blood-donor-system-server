@@ -1,8 +1,11 @@
 import express from "express";
 import auth from "../../middlewares/auth";
 import validateRequest from "../../middlewares/validateRequest";
-import { FindDonorValidationSchema } from "./finder.validation";
-import { findDonor } from "./finder.controller";
+import {
+  FindDonorValidationSchema,
+  FinderToDonorValidationSchema,
+} from "./finder.validation";
+import { changeFinderToDonor, findDonor } from "./finder.controller";
 
 const router = express.Router();
 
@@ -11,6 +14,13 @@ router.get(
   auth("donor", "finder"),
   validateRequest(FindDonorValidationSchema),
   findDonor
+);
+
+router.patch(
+  "/find-to-donor",
+  auth("finder"),
+  validateRequest(FinderToDonorValidationSchema),
+  changeFinderToDonor
 );
 
 const FinderRouters = router;

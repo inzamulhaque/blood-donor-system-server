@@ -15,7 +15,7 @@ const finderSchema = new Schema<IFinder>(
       trim: true,
       lowercase: true,
     },
-    phone: {
+    phoneNumber: {
       type: String,
       required: [true, "Contact number is required"],
       trim: true,
@@ -30,6 +30,11 @@ const finderSchema = new Schema<IFinder>(
       type: String,
       required: [true, "Upozila is required"],
       enum: UPOZILAS_PABNA,
+    },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {
