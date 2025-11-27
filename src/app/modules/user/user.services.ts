@@ -8,6 +8,8 @@ import { UserTrackingNumber } from "./user.utils";
 import mongoose from "mongoose";
 import Finder from "../finder/finder.model";
 import type { JwtPayload } from "jsonwebtoken";
+import { otpNumberGenerator } from "../auth/auth.utils";
+import { Otp } from "../auth/auth.model";
 
 export const createNewDonorService = async (
   payload: IUser & Partial<IDonor>
@@ -43,12 +45,25 @@ export const createNewDonorService = async (
     const trackingNumber = await UserTrackingNumber();
     payload.trackingNumber = trackingNumber;
 
+    const otp = await otpNumberGenerator();
+
     const newUser = await User.create(
       [
         {
           ...payload,
           role: "donor",
           accountStatus: "inactive",
+        },
+      ],
+      { session }
+    );
+
+    await Otp.create(
+      [
+        {
+          trackingNumber: trackingNumber,
+          otp: otp,
+          otpFor: "account-activation",
         },
       ],
       { session }

@@ -16,4 +16,5 @@ export interface IOTPVerification {
 export interface IOtp {
   otp: number;
   trackingNumber: number;
+  otpFor: "account-activation" | "password-reset";
 }

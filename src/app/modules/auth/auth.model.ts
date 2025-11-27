@@ -35,6 +35,12 @@ const otpSchema = new Schema<IOtp>(
       unique: true,
       ref: "User",
     },
+
+    otpFor: {
+      type: String,
+      required: true,
+      enum: ["account-activation", "password-reset"],
+    },
   },
   {
     timestamps: true,
