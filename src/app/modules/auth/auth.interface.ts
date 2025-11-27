@@ -12,3 +12,8 @@ export interface IOTPVerification {
   otp: string;
   trackingNumber: number;
 }
+
+export interface IOtp {
+  otp: number;
+  trackingNumber: number;
+}

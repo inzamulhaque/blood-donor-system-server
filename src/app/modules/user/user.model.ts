@@ -49,8 +49,8 @@ const userSchema = new Schema<IUser>(
       type: Number,
       required: [true, "Tracking number is required"],
       unique: true,
-      minlength: 6,
-      maxlength: 6,
+      min: 100000,
+      max: 999999,
     },
     role: {
       type: String,

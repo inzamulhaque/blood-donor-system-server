@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import type { IOldPassword } from "./auth.interface";
+import type { IOldPassword, IOtp } from "./auth.interface";
 
 const oldPasswordSchema = new Schema<IOldPassword>(
   {
@@ -19,7 +19,31 @@ const oldPasswordSchema = new Schema<IOldPassword>(
   }
 );
 
+const otpSchema = new Schema<IOtp>(
+  {
+    otp: {
+      type: Number,
+      required: true,
+      unique: false,
+      min: 10000,
+      max: 99999,
+    },
+
+    trackingNumber: {
+      type: Number,
+      required: true,
+      unique: true,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
 export const OldPassword = model<IOldPassword>(
   "OldPassword",
   oldPasswordSchema
 );
+
+export const Otp = model<IOtp>("Otp", otpSchema);
