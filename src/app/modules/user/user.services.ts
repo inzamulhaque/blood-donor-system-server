@@ -112,9 +112,23 @@ export const createNewFinderService = async (payload: IUser) => {
     const trackingNumber = await UserTrackingNumber();
     payload.trackingNumber = trackingNumber;
 
+    const otp = await otpNumberGenerator();
+
     const newUser = await User.create([{ ...payload, role: "finder" }], {
       session,
     });
+
+    await Otp.create(
+      [
+        {
+          trackingNumber: trackingNumber,
+          otp: otp,
+          otpFor: "account-activation",
+        },
+      ],
+      { session }
+    );
+
     const newFinder = await Finder.create([payload], { session });
     await session.commitTransaction();
     await session.endSession();
