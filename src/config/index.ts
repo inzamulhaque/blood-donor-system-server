@@ -29,4 +29,9 @@ export default {
     role: process.env.MAIN_ADMIN_ROLE,
     trackingNumber: process.env.MAIN_ADMIN_TRACKING_NUMBER,
   },
+
+  EMAIL: {
+    address: process.env.EMAIL_ADDRESS,
+    password: process.env.EMAIL_PASSWORD,
+  },
 };
