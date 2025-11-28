@@ -4,7 +4,10 @@ import type { IDonor } from "./donor.interface";
 import Donor, { DonateDate } from "./donor.model";
 import mongoose from "mongoose";
 
-export const addNewDonorService = async (payload: IDonor) => {
+export const addNewDonorService = async (
+  payload: IDonor,
+  trackingNumber: number
+) => {
   const isDonorExist = await Donor.findOne({
     phoneNumber: payload.phoneNumber,
   });
@@ -13,7 +16,7 @@ export const addNewDonorService = async (payload: IDonor) => {
     throw new AppError(httpStatus.CONFLICT, "Donor already exists!");
   }
 
-  const result = await Donor.create(payload);
+  const result = await Donor.create({ ...payload, addedBy: trackingNumber });
   return result;
 };
 

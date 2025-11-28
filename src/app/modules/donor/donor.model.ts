@@ -31,7 +31,7 @@ const donorSchema = new Schema<IDonor>(
     },
     addedBy: {
       type: Number,
-      ref: "Admin",
+      ref: "User",
     },
     trackingNumber: {
       type: Number,

@@ -9,7 +9,9 @@ import {
 
 export const addNewDonor = catchAsync(async (req, res) => {
   const payload = req.body;
-  const result = await addNewDonorService(payload);
+  const trackingNumber = (req.user as any)?.trackingNumber;
+
+  const result = await addNewDonorService(payload, trackingNumber);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
