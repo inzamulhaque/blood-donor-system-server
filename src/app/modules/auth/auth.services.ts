@@ -12,7 +12,6 @@ import {
 import config from "../../../config";
 import { OldPassword, Otp } from "./auth.model";
 import mongoose from "mongoose";
-import { log } from "node:console";
 import sendEmail from "../../utils/sendEmail";
 
 export const signinService = async (credentials: ISignin) => {
@@ -122,7 +121,10 @@ export const changePasswordService = async (payload: {
     );
   }
 
-  const hashedNewPassword = await bcrypt.hash(payload.newPassword, 10);
+  const hashedNewPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.BCRYPT_SALT_ROUNDS)
+  );
 
   const session = await mongoose.startSession();
 
@@ -309,6 +311,62 @@ export const forgotPasswordService = async (email: string) => {
     const emailInfo = await sendEmail(user.email, emailSubject, emailBody);
 
     return emailInfo;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    console.log(error);
+  }
+};
+
+export const resetPasswordService = async (
+  trackingNumber: number,
+  otp: number,
+  newPassword: string
+) => {
+  const otpData = await Otp.findOne({
+    trackingNumber,
+    otp,
+  });
+
+  if (!otpData) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid OTP!");
+  }
+
+  const fiveMinInMs = 5 * 60 * 1000;
+
+  const createdAt = otpData?.createdAt;
+
+  // @ts-ignore
+  const isExpired = Date.now() - new Date(createdAt).getTime() > fiveMinInMs;
+
+  if (isExpired) {
+    throw new AppError(httpStatus.GONE, "OTP has expired!");
+  }
+
+  const hashedNewPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.BCRYPT_SALT_ROUNDS)
+  );
+
+  const session = await mongoose.startSession();
+
+  try {
+    await session.startTransaction();
+    await Otp.deleteOne({ trackingNumber, otp }, { session });
+
+    const updatePassword = await User.updateOne(
+      { trackingNumber, isDeleted: false },
+      { $set: { password: hashedNewPassword, accountStatus: "active" } },
+      { session }
+    );
+
+    await Otp.deleteOne({ trackingNumber, otp }, { session });
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return updatePassword;
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();

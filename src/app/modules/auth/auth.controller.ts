@@ -5,6 +5,7 @@ import {
   changePasswordService,
   forgotPasswordService,
   resendOtpService,
+  resetPasswordService,
   signinService,
   verifyingOtpService,
 } from "./auth.services";
@@ -78,6 +79,24 @@ export const forgotPassword = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Password reset OTP sent successfully!",
+    data: result,
+  });
+});
+
+export const resetPassword = catchAsync(async (req, res) => {
+  const { trackingNumber } = req.params;
+  const { newPassword, otp } = req.body;
+
+  const result = await resetPasswordService(
+    Number(trackingNumber),
+    otp,
+    newPassword
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password reset successfully!",
     data: result,
   });
 });
