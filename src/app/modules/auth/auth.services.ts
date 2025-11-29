@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import type { ISignin } from "./auth.interface";
 import { createToken } from "./auth.utils";
 import config from "../../../config";
-import { OldPassword } from "./auth.model";
+import { OldPassword, Otp } from "./auth.model";
 import mongoose from "mongoose";
 import { log } from "node:console";
 
@@ -161,6 +161,61 @@ export const changePasswordService = async (payload: {
   } catch (error: any) {
     session.abortTransaction();
     session.endSession();
+
+    console.log(error);
+  }
+};
+
+export const verifyingOtpService = async (
+  trackingNumber: number,
+  otp: number
+) => {
+  const otpData = await Otp.findOne({
+    trackingNumber,
+    otp,
+  });
+
+  if (!otpData) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Invalid OTP!");
+  }
+
+  const fiveMinInMs = 5 * 60 * 1000;
+
+  const createdAt = otpData?.createdAt;
+
+  // @ts-ignore
+  const isExpired = Date.now() - new Date(createdAt).getTime() > fiveMinInMs;
+
+  if (isExpired) {
+    throw new AppError(httpStatus.GONE, "OTP has expired!");
+  }
+
+  const session = await mongoose.startSession();
+
+  try {
+    await session.startTransaction();
+    await Otp.deleteOne({ trackingNumber, otp }, { session });
+
+    const updateAccountStatus = await User.updateOne(
+      { trackingNumber, isDeleted: false },
+      { $set: { accountStatus: "active" } },
+      { session }
+    );
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    if (updateAccountStatus.modifiedCount === 0) {
+      throw new AppError(
+        httpStatus.INTERNAL_SERVER_ERROR,
+        "Failed to verify OTP!"
+      );
+    }
+
+    return updateAccountStatus;
+  } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
 
     console.log(error);
   }

@@ -29,3 +29,9 @@ export const ChangePasswordValidationSchema = z.object({
       ),
   }),
 });
+
+export const VerifyingOtpValidationSchema = z.object({
+  body: z.object({
+    otp: z.number({ message: "OTP is required" }),
+  }),
+});
