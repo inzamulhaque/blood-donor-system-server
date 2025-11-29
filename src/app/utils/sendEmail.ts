@@ -14,13 +14,27 @@ const sendEmail = async (to: string, subject: string, html: string) => {
       },
     });
 
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: config.EMAIL.address, // sender address
       to, // list of receivers
       subject, // Subject line
       text: "", // plain text body
       html, // html body
     });
+
+    if (info.accepted.length > 0) {
+      return {
+        success: true,
+        messageId: info.messageId,
+        accepted: info.accepted,
+        response: info.response,
+      };
+    } else {
+      return {
+        success: false,
+        message: "Email not sent!",
+      };
+    }
   } catch (error) {
     console.log(error);
   }

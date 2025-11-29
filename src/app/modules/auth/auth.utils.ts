@@ -16,7 +16,7 @@ export const verifyToken = (token: string, secret: jwt.Secret) => {
 };
 
 export const otpNumberGenerator = async (): Promise<number> => {
-  const randomNumber = Math.floor(10000 + Math.random() * 900000);
+  const randomNumber = Math.floor(10000 + Math.random() * 90000);
 
   const existingUser = await Otp.findOne({ otp: randomNumber });
 

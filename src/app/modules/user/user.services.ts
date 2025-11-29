@@ -4,7 +4,7 @@ import Donor from "../donor/donor.model";
 import type { IUser } from "./user.interface";
 import User from "./user.model";
 import httpStatus from "http-status";
-import { UserTrackingNumber } from "./user.utils";
+import { sendAccActivationEmail, UserTrackingNumber } from "./user.utils";
 import mongoose from "mongoose";
 import Finder from "../finder/finder.model";
 import type { JwtPayload } from "jsonwebtoken";
@@ -86,7 +86,13 @@ export const createNewDonorService = async (
 
     const { password, ...restData } = createdUser.toObject();
 
-    return { user: restData, donor: newDonor };
+    const emailInfo = await sendAccActivationEmail(
+      createdUser.email,
+      createdUser.name,
+      otp
+    );
+
+    return { user: restData, donor: newDonor, emailInfo };
   } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
