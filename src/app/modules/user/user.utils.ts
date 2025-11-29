@@ -30,40 +30,27 @@ export const formateAccActivationEmail = (name: string, otp: number) => {
                 color: #333;
             }
             .email-container {
-                background-image: url('https://i.ibb.co.com/J1pgCCw/emailBG.png'); 
-                background-size: cover;
-                background-position: center;
+                background-color: #ffffffb5;
                 max-width: 600px;
                 margin: 20px auto;
-                // background-color: #ffffff;
                 border-radius: 8px;
                 overflow: hidden;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
             .header {
-                // background-image: url('https://i.ibb.co.com/J1pgCCw/emailBG.png'); 
-                // background-size: cover;
-                // background-position: center;
                 padding: 40px 20px;
                 text-align: center;
-                color: #000000;
+                color: #ffffff;
                 position: relative;
-            }
-            .header::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.4); /* Dark overlay for text readability */
+                background: rgba(0, 0, 0, 0.4);
             }
             .header img {
                 max-width: 150px;
+                border-radius: 5px;
                 height: auto;
                 display: block;
                 margin: 0 auto 15px;
-                position: relative; /* Bring image above overlay */
+                position: relative;
                 z-index: 1;
             }
             .header h1 {
@@ -75,6 +62,7 @@ export const formateAccActivationEmail = (name: string, otp: number) => {
             .content {
                 padding: 30px;
                 line-height: 1.6;
+                background: #fff;
             }
             .otp-box {
                 background-color: #eee;
@@ -104,7 +92,8 @@ export const formateAccActivationEmail = (name: string, otp: number) => {
     <body>
         <div class="email-container">
             <div class="header">
-                <img src="https://i.ibb.co.com/Dg18pLFy/al-dima-logo.png" alt="Ihsan Al-Dima Logo"> <h1 style="color: #ffffff;">আপনার ডোনার অ্যাকাউন্ট সক্রিয় করুন</h1>
+                <img src="https://i.ibb.co/Dg18pLFy/al-dima-logo.png" alt="Ihsan Al-Dima Logo">
+                <h1>আপনার অ্যাকাউন্ট সক্রিয় করুন</h1>
             </div>
             <div class="content">
                 <p>প্রিয় ${name},</p>
@@ -112,13 +101,13 @@ export const formateAccActivationEmail = (name: string, otp: number) => {
                 <div class="otp-box">
                     ${otp}
                 </div>
-                <p>এই OTP টি <strong>৫</strong> মিনিটের জন্য বৈধ। আপনার অ্যাকাউন্টের নিরাপত্তা নিশ্চিত করতে এটি কারো সাথে শেয়ার করবেন না।</p>
+                <p>এই OTP টি <strong>৫</strong> মিনিটের জন্য বৈধ। এটি কখনও কারো সাথে শেয়ার করবেন না।</p>
                 <p>আপনার সমর্থনের জন্য ধন্যবাদ। আপনার এক ফোঁটা রক্ত ​​অনেক জীবন বাঁচাতে পারে!</p>
                 <p>শুভেচ্ছান্তে,<br>ইহসান আল-দিমা টিম</p>
             </div>
             <div class="footer">
                 <p>&copy; ${new Date().getFullYear()} ইহসান আল-দিমা। সর্বস্বত্ব সংরক্ষিত।</p>
-                <p><a href="[আপনার ওয়েবসাইটের লিঙ্ক]">আমাদের ওয়েবসাইট ভিজিট করুন</a></p>
+                <p><a href="#">আমাদের ওয়েবসাইট ভিজিট করুন</a></p>
             </div>
         </div>
     </body>
