@@ -151,7 +151,13 @@ export const createNewFinderService = async (payload: IUser) => {
 
     const createdFinder = newFinder[0] ?? newFinder;
 
-    return { user: restData, finder: createdFinder };
+    const emailInfo = await sendAccActivationEmail(
+      createdUser.email,
+      createdUser.name,
+      otp
+    );
+
+    return { user: restData, finder: createdFinder, emailInfo };
   } catch (error: any) {
     await session.abortTransaction();
     await session.endSession();
