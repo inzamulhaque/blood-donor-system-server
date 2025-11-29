@@ -3,11 +3,16 @@ import User from "../user/user.model";
 import httpStatus from "http-status";
 import bcrypt from "bcrypt";
 import type { ISignin } from "./auth.interface";
-import { createToken } from "./auth.utils";
+import {
+  createToken,
+  formateResendOTPEmail,
+  otpNumberGenerator,
+} from "./auth.utils";
 import config from "../../../config";
 import { OldPassword, Otp } from "./auth.model";
 import mongoose from "mongoose";
 import { log } from "node:console";
+import sendEmail from "../../utils/sendEmail";
 
 export const signinService = async (credentials: ISignin) => {
   const user = await User.findOne({
@@ -214,6 +219,54 @@ export const verifyingOtpService = async (
 
     return updateAccountStatus;
   } catch (error: any) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    console.log(error);
+  }
+};
+
+export const resendOtpService = async (trackingNumber: number) => {
+  const user = await User.findOne({ trackingNumber, isDeleted: false });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+  }
+
+  const newOtp = await otpNumberGenerator();
+
+  const session = await mongoose.startSession();
+
+  try {
+    await session.startTransaction();
+    await Otp.deleteOne({ trackingNumber }, { session });
+
+    const createNewOtp = await Otp.create(
+      [
+        {
+          trackingNumber,
+          otp: newOtp,
+          otpFor: "resend-otp",
+        },
+      ],
+      { session }
+    );
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    const emailBody = formateResendOTPEmail(user.name, newOtp);
+    const emailSubject =
+      "আপনার একাউন্ট যাচাইয়ের জন্য ওটিপি পুনরায় পাঠানো হয়েছে";
+
+    const sendEmailResponse = await sendEmail(
+      user.email,
+      emailSubject,
+      emailBody
+    );
+
+    return sendEmailResponse;
+  } catch (error) {
     await session.abortTransaction();
     await session.endSession();
 

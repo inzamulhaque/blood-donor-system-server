@@ -5,7 +5,12 @@ import {
   SignInValidationSchema,
   VerifyingOtpValidationSchema,
 } from "./auth.validation";
-import { changePassword, signin, verifyingOtp } from "./auth.controller";
+import {
+  changePassword,
+  resendOtp,
+  signin,
+  verifyingOtp,
+} from "./auth.controller";
 import auth from "../../middlewares/auth";
 
 const router = express.Router();
@@ -24,6 +29,8 @@ router.post(
   validateRequest(VerifyingOtpValidationSchema),
   verifyingOtp
 );
+
+router.post("/resend-otp/:trackingNumber", resendOtp);
 
 const AuthRouters = router;
 

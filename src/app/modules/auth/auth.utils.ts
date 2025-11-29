@@ -26,3 +26,105 @@ export const otpNumberGenerator = async (): Promise<number> => {
     return randomNumber;
   }
 };
+
+export const formateResendOTPEmail = (name: string, otp: number) => {
+  return `
+    <!DOCTYPE html>
+    <html lang="bn">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>নতুন OTP অনুরোধ</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f4;
+                color: #333;
+            }
+            .email-container {
+                background-color: #ffffffb5;
+                max-width: 600px;
+                margin: 20px auto;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+                padding: 40px 20px;
+                text-align: center;
+                color: #ffffff;
+                position: relative;
+                background: rgba(0, 0, 0, 0.4);
+            }
+            .header img {
+                max-width: 150px;
+                border-radius: 5px;
+                height: auto;
+                display: block;
+                margin: 0 auto 15px;
+                position: relative;
+                z-index: 1;
+            }
+            .header h1 {
+                margin: 0;
+                font-size: 28px;
+                position: relative;
+                z-index: 1;
+            }
+            .content {
+                padding: 30px;
+                line-height: 1.6;
+                background: #fff;
+            }
+            .otp-box {
+                background-color: #eee;
+                color: #d9534f;
+                font-size: 24px;
+                font-weight: bold;
+                text-align: center;
+                padding: 15px;
+                margin: 25px 0;
+                border-radius: 5px;
+                letter-spacing: 3px;
+            }
+            .footer {
+                background-color: #f8f8f8;
+                padding: 20px;
+                text-align: center;
+                font-size: 12px;
+                color: #666;
+                border-top: 1px solid #eee;
+            }
+            .footer a {
+                color: #d9534f;
+                text-decoration: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="header">
+                <img src="https://i.ibb.co/Dg18pLFy/al-dima-logo.png" alt="Ihsan Al-Dima Logo">
+                <h1>আপনার নতুন OTP</h1>
+            </div>
+            <div class="content">
+                <p>প্রিয় ${name},</p>
+                <p>আপনার অনুরোধের প্রেক্ষিতে, একটি নতুন ওয়ান টাইম পাসওয়ার্ড (OTP) নিচে দেওয়া হলো:</p>
+                <div class="otp-box">
+                    ${otp}
+                </div>
+                <p>এই OTP টি <strong>৫</strong> মিনিটের জন্য বৈধ। এটি কখনও কারো সাথে শেয়ার করবেন না।</p>
+                <p>যদি আপনি এই অনুরোধটি না করে থাকেন, তবে অনুগ্রহ করে এই ইমেইলটি উপেক্ষা করুন।</p>
+                <p>শুভেচ্ছান্তে,<br>ইহসান আল-দিমা টিম</p>
+            </div>
+            <div class="footer">
+                <p>&copy; ${new Date().getFullYear()} ইহসান আল-দিমা। সর্বস্বত্ব সংরক্ষিত।</p>
+                <p><a href="#">আমাদের ওয়েবসাইট ভিজিট করুন</a></p>
+            </div>
+        </div>
+    </body>
+    </html>
+  `;
+};

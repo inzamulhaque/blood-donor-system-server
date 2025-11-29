@@ -3,6 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import {
   changePasswordService,
+  resendOtpService,
   signinService,
   verifyingOtpService,
 } from "./auth.services";
@@ -50,6 +51,19 @@ export const verifyingOtp = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "OTP verified successfully!",
+    data: result,
+  });
+});
+
+export const resendOtp = catchAsync(async (req, res) => {
+  const { trackingNumber } = req.params;
+
+  const result = await resendOtpService(Number(trackingNumber));
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "OTP resent successfully!",
     data: result,
   });
 });
