@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import type { ISignin } from "./auth.interface";
 import {
   createToken,
+  formateForgetPasswordOTPEmail,
   formateResendOTPEmail,
   otpNumberGenerator,
 } from "./auth.utils";
@@ -241,7 +242,7 @@ export const resendOtpService = async (trackingNumber: number) => {
     await session.startTransaction();
     await Otp.deleteOne({ trackingNumber }, { session });
 
-    const createNewOtp = await Otp.create(
+    await Otp.create(
       [
         {
           trackingNumber,
@@ -266,6 +267,48 @@ export const resendOtpService = async (trackingNumber: number) => {
     );
 
     return sendEmailResponse;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    console.log(error);
+  }
+};
+
+export const forgotPasswordService = async (email: string) => {
+  const user = await User.findOne({ email, isDeleted: false });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+  }
+
+  const newOtp = await otpNumberGenerator();
+
+  const session = await mongoose.startSession();
+
+  try {
+    await session.startTransaction();
+    await Otp.deleteOne({ trackingNumber: user.trackingNumber }, { session });
+    await Otp.create(
+      [
+        {
+          trackingNumber: user.trackingNumber,
+          otp: newOtp,
+          otpFor: "password-reset",
+        },
+      ],
+      { session }
+    );
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    const emailBody = formateForgetPasswordOTPEmail(user.name, newOtp);
+    const emailSubject = "আপনার পাসওয়ার্ড রিসেট করার জন্য ওটিপি";
+
+    const emailInfo = await sendEmail(user.email, emailSubject, emailBody);
+
+    return emailInfo;
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();

@@ -35,3 +35,9 @@ export const VerifyingOtpValidationSchema = z.object({
     otp: z.number({ message: "OTP is required" }),
   }),
 });
+
+export const ForgotPasswordvalidationSchema = z.object({
+  body: z.object({
+    email: z.templateLiteral([z.string().min(1), "@", z.string().max(64)]),
+  }),
+});

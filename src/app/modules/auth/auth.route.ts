@@ -2,11 +2,13 @@ import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import {
   ChangePasswordValidationSchema,
+  ForgotPasswordvalidationSchema,
   SignInValidationSchema,
   VerifyingOtpValidationSchema,
 } from "./auth.validation";
 import {
   changePassword,
+  forgotPassword,
   resendOtp,
   signin,
   verifyingOtp,
@@ -31,6 +33,12 @@ router.post(
 );
 
 router.post("/resend-otp/:trackingNumber", resendOtp);
+
+router.post(
+  "/forgot-password",
+  validateRequest(ForgotPasswordvalidationSchema),
+  forgotPassword
+);
 
 const AuthRouters = router;
 

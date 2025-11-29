@@ -39,12 +39,7 @@ const otpSchema = new Schema<IOtp>(
     otpFor: {
       type: String,
       required: true,
-      enum: [
-        "account-activation",
-        "password-reset",
-        "email-change",
-        "resend-otp",
-      ],
+      enum: ["account-activation", "password-reset", "resend-otp"],
     },
   },
   {

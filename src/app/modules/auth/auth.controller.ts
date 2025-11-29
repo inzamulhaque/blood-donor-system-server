@@ -3,6 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import {
   changePasswordService,
+  forgotPasswordService,
   resendOtpService,
   signinService,
   verifyingOtpService,
@@ -64,6 +65,19 @@ export const resendOtp = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "OTP resent successfully!",
+    data: result,
+  });
+});
+
+export const forgotPassword = catchAsync(async (req, res) => {
+  const { email } = req.body;
+
+  const result = await forgotPasswordService(email);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password reset OTP sent successfully!",
     data: result,
   });
 });
