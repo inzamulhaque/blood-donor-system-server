@@ -1,4 +1,3 @@
-import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import {
@@ -13,7 +12,7 @@ export const addNewDonor = catchAsync(async (req, res) => {
 
   const result = await addNewDonorService(payload, trackingNumber);
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: 201,
     success: true,
     message: "Donor added successfully",
     data: result,
@@ -26,7 +25,7 @@ export const adDonateDate = catchAsync(async (req, res) => {
   const result = await addDonateDateService(req.body, trackingNumber);
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: 200,
     success: true,
     message: "Donate date added successfully!",
     data: result,
@@ -38,7 +37,7 @@ export const getMyDonateDateList = catchAsync(async (req, res) => {
   const result = await getMyDonateDateListService(trackingNumber);
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: 200,
     success: true,
     message: "Donate date list fetched successfully!",
     data: result,

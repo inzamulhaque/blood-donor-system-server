@@ -1,5 +1,5 @@
 import AppError from "../../errors/AppError";
-import httpStatus from "http-status";
+
 import User from "../user/user.model";
 import QueryBuilder from "../../builder/QueryBuilder";
 import Donor from "../donor/donor.model";
@@ -23,14 +23,11 @@ export const changeDonorRoleToAdminService = async (userEmail: string) => {
   const user = await User.findOne({ email: userEmail });
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+    throw new AppError(404, "User not found!");
   }
 
   if (user.role !== "donor") {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "Only donor role can be changed to admin!"
-    );
+    throw new AppError(400, "Only donor role can be changed to admin!");
   }
 
   const updated = await user.updateOne(

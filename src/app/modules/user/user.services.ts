@@ -3,7 +3,7 @@ import type { IDonor, TUpozila } from "../donor/donor.interface";
 import Donor from "../donor/donor.model";
 import type { IUser } from "./user.interface";
 import User from "./user.model";
-import httpStatus from "http-status";
+
 import { sendAccActivationEmail, UserTrackingNumber } from "./user.utils";
 import mongoose from "mongoose";
 import Finder from "../finder/finder.model";
@@ -17,10 +17,7 @@ export const createNewDonorService = async (
   const existingUser = await User.findOne({ email: payload.email });
 
   if (existingUser) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      "User with this email already exists!"
-    );
+    throw new AppError(409, "User with this email already exists!");
   }
 
   const donorExistingWithPhone = await User.find({
@@ -78,10 +75,7 @@ export const createNewDonorService = async (
 
     const createdUser = newUser[0];
     if (!createdUser) {
-      throw new AppError(
-        httpStatus.INTERNAL_SERVER_ERROR,
-        "Failed to create user!"
-      );
+      throw new AppError(500, "Failed to create user!");
     }
 
     const { password, ...restData } = createdUser.toObject();
@@ -105,10 +99,7 @@ export const createNewFinderService = async (payload: IUser) => {
   const existingUser = await User.findOne({ email: payload.email });
 
   if (existingUser) {
-    throw new AppError(
-      httpStatus.CONFLICT,
-      "User with this email already exists!"
-    );
+    throw new AppError(409, "User with this email already exists!");
   }
 
   const session = await mongoose.startSession();
@@ -141,10 +132,7 @@ export const createNewFinderService = async (payload: IUser) => {
 
     const createdUser = newUser[0];
     if (!createdUser) {
-      throw new AppError(
-        httpStatus.INTERNAL_SERVER_ERROR,
-        "Failed to create user!"
-      );
+      throw new AppError(500, "Failed to create user!");
     }
 
     const { password, ...restData } = createdUser.toObject();
@@ -174,7 +162,7 @@ export const getMeService = async (payload: JwtPayload) => {
     .lean();
 
   if (!user) {
-    throw new AppError(httpStatus.BAD_REQUEST, "User not found!");
+    throw new AppError(400, "User not found!");
   }
 
   let otherInfo: any = {};
@@ -208,7 +196,7 @@ export const updateUserService = async (
   });
 
   if (!user) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "User not found!");
+    throw new AppError(401, "User not found!");
   }
 
   let otherData: any;

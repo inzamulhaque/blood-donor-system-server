@@ -1,5 +1,5 @@
 import AppError from "../../errors/AppError";
-import httpStatus from "http-status";
+
 import type { TBloodGroup, TUpozila } from "../donor/donor.interface";
 import Donor from "../donor/donor.model";
 import Finder from "./finder.model";
@@ -34,11 +34,11 @@ export const changeFinderToDonorService = async (
   });
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+    throw new AppError(404, "User not found!");
   }
 
   if (!finder) {
-    throw new AppError(httpStatus.NOT_FOUND, "Finder not found!");
+    throw new AppError(404, "Finder not found!");
   }
 
   const session = await mongoose.startSession();

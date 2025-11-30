@@ -1,5 +1,5 @@
 import AppError from "../../errors/AppError";
-import httpStatus from "http-status";
+
 import type { IDonor } from "./donor.interface";
 import Donor, { DonateDate } from "./donor.model";
 import mongoose from "mongoose";
@@ -13,7 +13,7 @@ export const addNewDonorService = async (
   });
 
   if (isDonorExist) {
-    throw new AppError(httpStatus.CONFLICT, "Donor already exists!");
+    throw new AppError(409, "Donor already exists!");
   }
 
   const result = await Donor.create({ ...payload, addedBy: trackingNumber });
@@ -32,7 +32,7 @@ export const addDonateDateService = async (
 
   // validated donor found or not
   if (!donor) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "Donor not found!");
+    throw new AppError(401, "Donor not found!");
   }
 
   // today date
@@ -49,10 +49,7 @@ export const addDonateDateService = async (
   });
 
   if (findInDB) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "This date already exists in the database!"
-    );
+    throw new AppError(400, "This date already exists in the database!");
   }
 
   const diffInMs = now.getTime() - donateDate.getTime();
@@ -62,10 +59,7 @@ export const addDonateDateService = async (
 
   // validation date for not adding advance date
   if (diffInDays <= 0) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      "You are not able to add an advance date!"
-    );
+    throw new AppError(400, "You are not able to add an advance date!");
   }
 
   const readyForDonate: boolean = diffInDays >= 90;
@@ -139,7 +133,7 @@ export const getMyDonateDateListService = async (trackingNumber: number) => {
   });
 
   if (!donor) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "Donor not found!");
+    throw new AppError(401, "Donor not found!");
   }
 
   const donateDates = await DonateDate.find({

@@ -1,6 +1,6 @@
 import AppError from "../../errors/AppError";
 import User from "../user/user.model";
-import httpStatus from "http-status";
+
 import bcrypt from "bcrypt";
 import type { ISignin } from "./auth.interface";
 import {
@@ -21,19 +21,19 @@ export const signinService = async (credentials: ISignin) => {
   });
 
   if (!user) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid credentials!");
+    throw new AppError(401, "Invalid credentials!");
   }
 
   if (user?.blockStatus?.isBlocked) {
     throw new AppError(
-      httpStatus.FORBIDDEN,
+      403,
       "Your account has been blocked. Please contact support!"
     );
   }
 
   if (user.accountStatus === "inactive") {
     throw new AppError(
-      httpStatus.FORBIDDEN,
+      403,
       "Your account is inactive. Please activate your account by verifying your email!"
     );
   }
@@ -44,7 +44,7 @@ export const signinService = async (credentials: ISignin) => {
   );
 
   if (!isPasswordValid) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid password!");
+    throw new AppError(401, "Invalid password!");
   }
 
   const token = createToken(
@@ -82,7 +82,7 @@ export const changePasswordService = async (payload: {
   });
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+    throw new AppError(404, "User not found!");
   }
 
   const isOldPasswordValid = await bcrypt.compare(
@@ -91,7 +91,7 @@ export const changePasswordService = async (payload: {
   );
 
   if (!isOldPasswordValid) {
-    throw new AppError(httpStatus.UNAUTHORIZED, "Old password is incorrect!");
+    throw new AppError(401, "Old password is incorrect!");
   }
 
   const oldAndNewPasswordSame = await bcrypt.compare(
@@ -101,7 +101,7 @@ export const changePasswordService = async (payload: {
 
   if (oldAndNewPasswordSame) {
     throw new AppError(
-      httpStatus.BAD_REQUEST,
+      400,
       "New password must be different from the old password!"
     );
   }
@@ -116,7 +116,7 @@ export const changePasswordService = async (payload: {
 
   if (isPasswordusedBefore) {
     throw new AppError(
-      httpStatus.BAD_REQUEST,
+      400,
       "You cannot use a previously used password. Please choose a different password!"
     );
   }
@@ -155,10 +155,7 @@ export const changePasswordService = async (payload: {
     session.endSession();
 
     if (updatedPassword.modifiedCount === 0) {
-      throw new AppError(
-        httpStatus.INTERNAL_SERVER_ERROR,
-        "Failed to update password!"
-      );
+      throw new AppError(500, "Failed to update password!");
     }
 
     return {
@@ -184,7 +181,7 @@ export const verifyingOtpService = async (
   });
 
   if (!otpData) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Invalid OTP!");
+    throw new AppError(400, "Invalid OTP!");
   }
 
   const fiveMinInMs = 5 * 60 * 1000;
@@ -195,7 +192,7 @@ export const verifyingOtpService = async (
   const isExpired = Date.now() - new Date(createdAt).getTime() > fiveMinInMs;
 
   if (isExpired) {
-    throw new AppError(httpStatus.GONE, "OTP has expired!");
+    throw new AppError(410, "OTP has expired!");
   }
 
   const session = await mongoose.startSession();
@@ -214,10 +211,7 @@ export const verifyingOtpService = async (
     await session.endSession();
 
     if (updateAccountStatus.modifiedCount === 0) {
-      throw new AppError(
-        httpStatus.INTERNAL_SERVER_ERROR,
-        "Failed to verify OTP!"
-      );
+      throw new AppError(500, "Failed to verify OTP!");
     }
 
     return updateAccountStatus;
@@ -233,7 +227,7 @@ export const resendOtpService = async (trackingNumber: number) => {
   const user = await User.findOne({ trackingNumber, isDeleted: false });
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+    throw new AppError(404, "User not found!");
   }
 
   const newOtp = await otpNumberGenerator();
@@ -281,7 +275,7 @@ export const forgotPasswordService = async (email: string) => {
   const user = await User.findOne({ email, isDeleted: false });
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+    throw new AppError(404, "User not found!");
   }
 
   const newOtp = await otpNumberGenerator();
@@ -330,7 +324,7 @@ export const resetPasswordService = async (
   });
 
   if (!otpData) {
-    throw new AppError(httpStatus.BAD_REQUEST, "Invalid OTP!");
+    throw new AppError(400, "Invalid OTP!");
   }
 
   const fiveMinInMs = 5 * 60 * 1000;
@@ -341,13 +335,13 @@ export const resetPasswordService = async (
   const isExpired = Date.now() - new Date(createdAt).getTime() > fiveMinInMs;
 
   if (isExpired) {
-    throw new AppError(httpStatus.GONE, "OTP has expired!");
+    throw new AppError(410, "OTP has expired!");
   }
 
   const user = await User.findOne({ trackingNumber, isDeleted: false });
 
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+    throw new AppError(404, "User not found!");
   }
 
   const oldAndNewPasswordSame = await bcrypt.compare(
@@ -357,7 +351,7 @@ export const resetPasswordService = async (
 
   if (oldAndNewPasswordSame) {
     throw new AppError(
-      httpStatus.BAD_REQUEST,
+      400,
       "New password must be different from the old password!"
     );
   }
@@ -372,7 +366,7 @@ export const resetPasswordService = async (
 
   if (isPasswordusedBefore) {
     throw new AppError(
-      httpStatus.BAD_REQUEST,
+      400,
       "You cannot use a previously used password. Please choose a different password!"
     );
   }
