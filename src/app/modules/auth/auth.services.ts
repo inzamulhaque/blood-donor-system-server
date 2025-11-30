@@ -344,6 +344,39 @@ export const resetPasswordService = async (
     throw new AppError(httpStatus.GONE, "OTP has expired!");
   }
 
+  const user = await User.findOne({ trackingNumber, isDeleted: false });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+  }
+
+  const oldAndNewPasswordSame = await bcrypt.compare(
+    newPassword,
+    user.password
+  );
+
+  if (oldAndNewPasswordSame) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "New password must be different from the old password!"
+    );
+  }
+
+  const haveOldPassword = await OldPassword.findOne({
+    trackingNumber: String(trackingNumber),
+  });
+
+  const isPasswordusedBefore = haveOldPassword
+    ? await bcrypt.compare(newPassword, haveOldPassword.oldPassword)
+    : false;
+
+  if (isPasswordusedBefore) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You cannot use a previously used password. Please choose a different password!"
+    );
+  }
+
   const hashedNewPassword = await bcrypt.hash(
     newPassword,
     Number(config.BCRYPT_SALT_ROUNDS)
@@ -355,9 +388,23 @@ export const resetPasswordService = async (
     await session.startTransaction();
     await Otp.deleteOne({ trackingNumber, otp }, { session });
 
-    const updatePassword = await User.updateOne(
-      { trackingNumber, isDeleted: false },
+    const updatePassword = await user.updateOne(
       { $set: { password: hashedNewPassword, accountStatus: "active" } },
+      { session }
+    );
+
+    await OldPassword.deleteOne(
+      { trackingNumber: trackingNumber },
+      { session }
+    );
+
+    await OldPassword.create(
+      [
+        {
+          trackingNumber: trackingNumber,
+          oldPassword: user.password,
+        },
+      ],
       { session }
     );
 
