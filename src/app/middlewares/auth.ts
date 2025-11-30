@@ -5,7 +5,6 @@ import { verifyToken } from "../modules/auth/auth.utils";
 import type { TUserRole } from "../modules/user/user.interface";
 import User from "../modules/user/user.model";
 import catchAsync from "../utils/catchAsync";
-import httpStatus from "http-status";
 
 // augment Express Request type to include `user`
 declare global {
