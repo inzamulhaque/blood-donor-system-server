@@ -29,6 +29,6 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // api not found
-app.all("*", notFound);
+app.use(notFound);
 
 export default app;
