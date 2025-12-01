@@ -6,6 +6,7 @@ import router from "./routes";
 import cron from "node-cron";
 import { updateAvailabilityByDate } from "./app/modules/donor/donor.utils";
 import notFound from "./app/middlewares/notFound";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 
 const app: Application = express();
 
@@ -30,5 +31,8 @@ app.get("/", (req: Request, res: Response) => {
 
 // api not found
 app.use(notFound);
+
+// global error handler
+app.use(globalErrorHandler);
 
 export default app;
