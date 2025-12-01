@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import router from "./routes";
 import cron from "node-cron";
 import { updateAvailabilityByDate } from "./app/modules/donor/donor.utils";
+import notFound from "./app/middlewares/notFound";
 
 const app: Application = express();
 
@@ -26,5 +27,8 @@ app.get("/", (req: Request, res: Response) => {
     statusCode: 200,
   });
 });
+
+// api not found
+app.all("*", notFound);
 
 export default app;
