@@ -1,7 +1,9 @@
 import type mongoose from "mongoose";
-import type { IErrorSources } from "./error.interface";
+import type { IErrorSources, IGenericErrorResponse } from "./error.interface";
 
-const handleCastError = (err: mongoose.Error.CastError) => {
+const handleCastError = (
+  err: mongoose.Error.CastError
+): IGenericErrorResponse => {
   const errorSources: IErrorSources[] = [
     {
       path: err?.path,
@@ -15,3 +17,5 @@ const handleCastError = (err: mongoose.Error.CastError) => {
     errorSources,
   };
 };
+
+export default handleCastError;
