@@ -1,7 +1,9 @@
 import type mongoose from "mongoose";
-import type { IErrorSources } from "./error.interface";
+import type { IErrorSources, IGenericErrorResponse } from "./error.interface";
 
-const handleValidationError = (err: mongoose.Error.ValidationError) => {
+const handleValidationError = (
+  err: mongoose.Error.ValidationError
+): IGenericErrorResponse => {
   const errorSources: IErrorSources[] = Object.values(err.errors).map((el) => {
     return {
       path: el.path,
