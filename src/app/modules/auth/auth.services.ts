@@ -177,10 +177,13 @@ export const verifyingOtpService = async (
 ) => {
   const otpData = await Otp.findOne({
     trackingNumber,
-    otp,
   });
 
   if (!otpData) {
+    throw new AppError(400, "User not found!");
+  }
+
+  if (otpData.otp !== otp) {
     throw new AppError(400, "Invalid OTP!");
   }
 
@@ -320,10 +323,13 @@ export const resetPasswordService = async (
 ) => {
   const otpData = await Otp.findOne({
     trackingNumber,
-    otp,
   });
 
   if (!otpData) {
+    throw new AppError(400, "User not found!");
+  }
+
+  if (otpData.otp !== otp) {
     throw new AppError(400, "Invalid OTP!");
   }
 

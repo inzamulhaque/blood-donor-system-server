@@ -42,7 +42,7 @@ router.post(
   forgotPassword
 );
 
-router.post(
+router.patch(
   "/reset-password/:trackingNumber",
   validateRequest(ResetPasswordValidationSchema),
   resetPassword
