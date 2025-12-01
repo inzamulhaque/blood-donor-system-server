@@ -68,6 +68,16 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     ];
   }
 
+  if (err instanceof Error) {
+    message = err?.message;
+    errorSources = [
+      {
+        path: "",
+        message: err?.message,
+      },
+    ];
+  }
+
   return res.status(statusCode).json({
     success: false,
     message,
