@@ -4,13 +4,15 @@ import config from "./config/index";
 import mongoose from "mongoose";
 import seedSuperAndMainAdmin from "./app/DB";
 
+let server: Server;
+
 async function main() {
   try {
     await mongoose.connect(config.DATABASE_URL as string);
 
     seedSuperAndMainAdmin();
 
-    const server: Server = app.listen(config.PORT, () => {
+    server = app.listen(config.PORT, () => {
       console.log(`http://localhost:${config.PORT}`);
     });
   } catch (error) {
@@ -19,3 +21,16 @@ async function main() {
 }
 
 main();
+
+process.on("unhandledRejection", () => {
+  console.log("unhandledRejection");
+
+  if (server) {
+    server.close(() => {
+      console.log("Server closed due to unhandledRejection");
+      process.exit(1);
+    });
+  }
+
+  process.exit(1);
+});
