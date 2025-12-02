@@ -34,3 +34,16 @@ process.on("unhandledRejection", () => {
 
   process.exit(1);
 });
+
+process.on("uncaughtException", () => {
+  console.log("uncaughtException");
+
+  if (server) {
+    server.close(() => {
+      console.log("Server closed due to uncaughtException");
+      process.exit(1);
+    });
+  }
+
+  process.exit(1);
+});
