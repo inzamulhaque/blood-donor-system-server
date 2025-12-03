@@ -22,14 +22,6 @@ export default {
     trackingNumber: process.env.SUPER_ADMIN_TRACKING_NUMBER,
   },
 
-  MAIN_ADMIN: {
-    name: process.env.MAIN_ADMIN_NAME,
-    email: process.env.MAIN_ADMIN_EMAIL,
-    password: process.env.MAIN_ADMIN_PASSWORD,
-    role: process.env.MAIN_ADMIN_ROLE,
-    trackingNumber: process.env.MAIN_ADMIN_TRACKING_NUMBER,
-  },
-
   EMAIL: {
     address: process.env.EMAIL_ADDRESS,
     password: process.env.EMAIL_PASSWORD,

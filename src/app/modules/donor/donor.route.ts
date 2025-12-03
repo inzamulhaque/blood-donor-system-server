@@ -15,7 +15,7 @@ const router = express.Router();
 
 router.post(
   "/add-donor",
-  auth("main-admin", "admin"),
+  auth("super-admin", "admin"),
   validateRequest(DonorValidationSchema),
   addNewDonor
 );

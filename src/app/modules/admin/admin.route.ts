@@ -15,55 +15,43 @@ import { BlockingUserValidationSchema } from "./admin.validation";
 
 const router = express.Router();
 
-router.get(
-  "/all-users",
-  auth("super-admin", "main-admin", "admin"),
-  getAllUser
-);
+router.get("/all-users", auth("super-admin", "admin"), getAllUser);
 
 router.patch(
   "/change-donor-to-admin",
-  auth("super-admin", "main-admin"),
+  auth("super-admin"),
   changeDonorRoleToAdmin
 );
 
-router.get(
-  "/all-donor",
-  auth("super-admin", "main-admin", "admin"),
-  getAllDonor
-);
+router.get("/all-donor", auth("super-admin", "admin"), getAllDonor);
 
 router.patch(
   "/block-user/:trackingNumber",
-  auth("super-admin", "main-admin", "admin"),
+  auth("super-admin", "admin"),
   validateRequest(BlockingUserValidationSchema),
   blockUser
 );
 
 router.patch(
   "/unblock-user/:trackingNumber",
-  auth("super-admin", "main-admin", "admin"),
+  auth("super-admin", "admin"),
   unblockUser
 );
 
 router.patch(
   "/block-admin/:trackingNumber",
-  auth("super-admin", "main-admin"),
+  auth("super-admin"),
   validateRequest(BlockingUserValidationSchema),
   blockAdmin
 );
 
 router.patch(
   "/unblock-admin/:trackingNumber",
-  auth("super-admin", "main-admin"),
+  auth("super-admin"),
   unblockAdmin
 );
 
-router.patch(
-  "/remove-admin/:trackingNumber",
-  auth("super-admin", "main-admin"),
-  removeAdmin
-);
+router.patch("/remove-admin/:trackingNumber", auth("super-admin"), removeAdmin);
 
 const AdminRouters = router;
 

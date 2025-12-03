@@ -25,7 +25,7 @@ router.post("/signin", validateRequest(SignInValidationSchema), signin);
 
 router.patch(
   "/change-password",
-  auth("super-admin", "main-admin", "admin", "donor", "finder"),
+  auth("super-admin", "admin", "donor", "finder"),
   validateRequest(ChangePasswordValidationSchema),
   changePassword
 );

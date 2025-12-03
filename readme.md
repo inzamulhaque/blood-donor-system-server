@@ -20,10 +20,6 @@ Through this system we manage our blood donating program. People who are willing
 - The super admin can block any admin and remove their admin role, reverting them back to a donor.
 - The super admin can perform all the tasks that an admin can.
 
-### Main Admin
-
-- The main admin can perform all the actions of both the super admin and the admin.
-
 ### Admin
 
 - The admin can view the information of all users.
@@ -86,11 +82,6 @@ SUPER_ADMIN_EMAIL="super admin email"
 SUPER_ADMIN_PASSWORD="super admin password"
 SUPER_ADMIN_ROLE="Super admin role"
 SUPER_ADMIN_TRACKING_NUMBER="Super admin tracking number"
-MAIN_ADMIN_NAME="Main admin name"
-MAIN_ADMIN_EMAIL="Main admin email"
-MAIN_ADMIN_PASSWORD="Main admin password"
-MAIN_ADMIN_ROLE="Main admin role"
-MAIN_ADMIN_TRACKING_NUMBER="main admin tracking number"
 EMAIL_ADDRESS="Email address"
 EMAIL_PASSWORD="App password for email address"
 ```

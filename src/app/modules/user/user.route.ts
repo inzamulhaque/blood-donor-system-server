@@ -26,11 +26,7 @@ router.post(
   createNewFinder
 );
 
-router.get(
-  "/me",
-  auth("super-admin", "main-admin", "admin", "donor", "finder"),
-  getMe
-);
+router.get("/me", auth("super-admin", "admin", "donor", "finder"), getMe);
 
 router.patch(
   "/update",

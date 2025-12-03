@@ -63,11 +63,7 @@ export const blockUserService = async (
     throw new AppError(404, "User not found!");
   }
 
-  if (
-    user.role === "super-admin" ||
-    user.role === "main-admin" ||
-    user?.role === "admin"
-  ) {
+  if (user.role === "super-admin" || user?.role === "admin") {
     throw new AppError(400, "You cannot block an admin user!");
   }
 
@@ -90,11 +86,7 @@ export const unblockUserService = async (trackingNumber: number) => {
   if (!user) {
     throw new AppError(404, "User not found!");
   }
-  if (
-    user.role === "super-admin" ||
-    user.role === "main-admin" ||
-    user?.role === "admin"
-  ) {
+  if (user.role === "super-admin" || user?.role === "admin") {
     throw new AppError(400, "You cannot block an admin user!");
   }
 
