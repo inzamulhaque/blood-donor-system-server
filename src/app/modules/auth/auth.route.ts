@@ -3,6 +3,7 @@ import validateRequest from "../../middlewares/validateRequest";
 import {
   ChangePasswordValidationSchema,
   ForgotPasswordvalidationSchema,
+  RefreshTokenValidationSchema,
   ResetPasswordValidationSchema,
   SignInValidationSchema,
   VerifyingOtpValidationSchema,
@@ -10,6 +11,7 @@ import {
 import {
   changePassword,
   forgotPassword,
+  refreshToken,
   resendOtp,
   resetPassword,
   signin,
@@ -46,6 +48,12 @@ router.patch(
   "/reset-password/:trackingNumber",
   validateRequest(ResetPasswordValidationSchema),
   resetPassword
+);
+
+router.post(
+  "/refresh-token",
+  validateRequest(RefreshTokenValidationSchema),
+  refreshToken
 );
 
 const AuthRouters = router;

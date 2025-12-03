@@ -4,6 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import {
   changePasswordService,
   forgotPasswordService,
+  refreshTokenService,
   resendOtpService,
   resetPasswordService,
   signinService,
@@ -98,5 +99,18 @@ export const resetPassword = catchAsync(async (req, res) => {
     success: true,
     message: "Password reset successfully!",
     data: result,
+  });
+});
+
+export const refreshToken = catchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+
+  const token = await refreshTokenService(refreshToken);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Token refreshed successfully!",
+    data: { token },
   });
 });

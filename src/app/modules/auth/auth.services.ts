@@ -8,6 +8,7 @@ import {
   formateForgetPasswordOTPEmail,
   formateResendOTPEmail,
   otpNumberGenerator,
+  verifyToken,
 } from "./auth.utils";
 import config from "../../../config";
 import { OldPassword, Otp } from "./auth.model";
@@ -420,4 +421,36 @@ export const resetPasswordService = async (
 
     console.log(error);
   }
+};
+
+export const refreshTokenService = async (token: string) => {
+  const decoded = verifyToken(token, config.JWT_REFRESH_SECRET);
+
+  const { trackingNumber } = decoded;
+
+  const user = await User.findOne({ trackingNumber, isDeleted: false });
+
+  if (!user) {
+    throw new AppError(404, "User not found!");
+  }
+
+  if (user?.blockStatus?.isBlocked) {
+    throw new AppError(
+      403,
+      "Your account has been blocked. Please contact support!"
+    );
+  }
+
+  const jwtPayload = {
+    trackingNumber: user.trackingNumber,
+    role: user.role,
+  };
+
+  const newAccessToken = createToken(
+    jwtPayload,
+    config.JWT_ACCESS_SECRET,
+    config.JWT_ACCESS_EXPIRES_IN
+  );
+
+  return newAccessToken;
 };
