@@ -14,6 +14,7 @@ export const blockStatusSchema = new Schema<IBlockStatus>(
     },
     blockReason: {
       type: String,
+      required: true,
     },
 
     blockedBy: {

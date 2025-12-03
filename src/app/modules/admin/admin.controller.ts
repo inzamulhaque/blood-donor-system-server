@@ -2,6 +2,7 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 
 import {
+  blockUserService,
   changeDonorRoleToAdminService,
   getAllDonorService,
   getAllUserService,
@@ -44,6 +45,25 @@ export const getAllDonor = catchAsync(async (req, res) => {
     success: true,
     message: "Get all donor successfully!",
     meta: meta,
+    data: result,
+  });
+});
+
+export const blockUser = catchAsync(async (req, res) => {
+  const { trackingNumber } = req.params;
+  const { reason } = req.body;
+  const adminTrackingNumber = req.user?.trackingNumber;
+
+  const result = await blockUserService(
+    Number(trackingNumber),
+    Number(adminTrackingNumber),
+    reason
+  );
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "User blocked successfully!",
     data: result,
   });
 });
