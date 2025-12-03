@@ -6,6 +6,7 @@ import {
   changeDonorRoleToAdmin,
   getAllDonor,
   getAllUser,
+  unblockAdmin,
   unblockUser,
 } from "./admin.controller";
 import validateRequest from "../../middlewares/validateRequest";
@@ -49,6 +50,12 @@ router.patch(
   auth("super-admin", "main-admin"),
   validateRequest(BlockingUserValidationSchema),
   blockAdmin
+);
+
+router.patch(
+  "/unblock-admin/:trackingNumber",
+  auth("super-admin", "main-admin"),
+  unblockAdmin
 );
 
 const AdminRouters = router;

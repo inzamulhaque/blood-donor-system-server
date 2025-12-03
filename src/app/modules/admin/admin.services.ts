@@ -90,6 +90,13 @@ export const unblockUserService = async (trackingNumber: number) => {
   if (!user) {
     throw new AppError(404, "User not found!");
   }
+  if (
+    user.role === "super-admin" ||
+    user.role === "main-admin" ||
+    user?.role === "admin"
+  ) {
+    throw new AppError(400, "You cannot block an admin user!");
+  }
 
   const unblockUser = await user.updateOne({
     $unset: {
@@ -125,4 +132,23 @@ export const blockAdminService = async (
   });
 
   return blockUser;
+};
+
+export const unblockAdminService = async (trackingNumber: number) => {
+  const user = await User.findOne({ trackingNumber });
+
+  if (!user) {
+    throw new AppError(404, "User not found!");
+  }
+  if (user.role !== "admin") {
+    throw new AppError(400, "Only admin user can be unblocked!");
+  }
+
+  const unblockUser = await user.updateOne({
+    $unset: {
+      blockStatus: "",
+    },
+  });
+
+  return unblockUser;
 };

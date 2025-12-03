@@ -7,6 +7,7 @@ import {
   changeDonorRoleToAdminService,
   getAllDonorService,
   getAllUserService,
+  unblockAdminService,
   unblockUserService,
 } from "./admin.services";
 
@@ -98,6 +99,19 @@ export const blockAdmin = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Admin blocked successfully!",
+    data: result,
+  });
+});
+
+export const unblockAdmin = catchAsync(async (req, res) => {
+  const { trackingNumber } = req.params;
+
+  const result = await unblockAdminService(Number(trackingNumber));
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Admin unblocked successfully!",
     data: result,
   });
 });
