@@ -1,10 +1,12 @@
 import express from "express";
 import auth from "../../middlewares/auth";
 import {
+  blockAdmin,
   blockUser,
   changeDonorRoleToAdmin,
   getAllDonor,
   getAllUser,
+  unblockUser,
 } from "./admin.controller";
 import validateRequest from "../../middlewares/validateRequest";
 import { BlockingUserValidationSchema } from "./admin.validation";
@@ -34,6 +36,19 @@ router.patch(
   auth("super-admin", "main-admin", "admin"),
   validateRequest(BlockingUserValidationSchema),
   blockUser
+);
+
+router.patch(
+  "/unblock-user/:trackingNumber",
+  auth("super-admin", "main-admin", "admin"),
+  unblockUser
+);
+
+router.patch(
+  "/block-admin/:trackingNumber",
+  auth("super-admin", "main-admin"),
+  validateRequest(BlockingUserValidationSchema),
+  blockAdmin
 );
 
 const AdminRouters = router;

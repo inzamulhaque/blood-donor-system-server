@@ -71,18 +71,55 @@ export const blockUserService = async (
     throw new AppError(400, "You cannot block an admin user!");
   }
 
-  const admin = await User.findOne({ trackingNumber: adminTrackingNumber });
+  const blockUser = await user.updateOne({
+    $set: {
+      blockStatus: {
+        isBlocked: true,
+        blockedBy: adminTrackingNumber,
+        blockReason: reason,
+      },
+    },
+  });
 
-  if (!admin) {
-    throw new AppError(404, "Admin not found!");
+  return blockUser;
+};
+
+export const unblockUserService = async (trackingNumber: number) => {
+  const user = await User.findOne({ trackingNumber });
+
+  if (!user) {
+    throw new AppError(404, "User not found!");
+  }
+
+  const unblockUser = await user.updateOne({
+    $unset: {
+      blockStatus: "",
+    },
+  });
+
+  return unblockUser;
+};
+
+export const blockAdminService = async (
+  trackingNumber: number,
+  adminTrackingNumber: number,
+  reason: string
+) => {
+  const user = await User.findOne({ trackingNumber });
+
+  if (!user) {
+    throw new AppError(404, "User not found!");
+  }
+  if (user.role !== "admin") {
+    throw new AppError(400, "Only admin user can be blocked!");
   }
 
   const blockUser = await user.updateOne({
     $set: {
       blockStatus: {
         isBlocked: true,
-        blockedBy: admin.trackingNumber,
         blockReason: reason,
+        blockedBy: adminTrackingNumber,
       },
     },
   });

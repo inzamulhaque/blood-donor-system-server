@@ -2,10 +2,12 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 
 import {
+  blockAdminService,
   blockUserService,
   changeDonorRoleToAdminService,
   getAllDonorService,
   getAllUserService,
+  unblockUserService,
 } from "./admin.services";
 
 export const getAllUser = catchAsync(async (req, res) => {
@@ -64,6 +66,38 @@ export const blockUser = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "User blocked successfully!",
+    data: result,
+  });
+});
+
+export const unblockUser = catchAsync(async (req, res) => {
+  const { trackingNumber } = req.params;
+
+  const result = await unblockUserService(Number(trackingNumber));
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "User unblocked successfully!",
+    data: result,
+  });
+});
+
+export const blockAdmin = catchAsync(async (req, res) => {
+  const { trackingNumber } = req.params;
+  const { reason } = req.body;
+  const superAdminTrackingNumber = req.user?.trackingNumber;
+
+  const result = await blockAdminService(
+    Number(trackingNumber),
+    Number(superAdminTrackingNumber),
+    reason
+  );
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Admin blocked successfully!",
     data: result,
   });
 });
