@@ -6,6 +6,7 @@ import {
   changeDonorRoleToAdmin,
   getAllDonor,
   getAllUser,
+  removeAdmin,
   unblockAdmin,
   unblockUser,
 } from "./admin.controller";
@@ -56,6 +57,12 @@ router.patch(
   "/unblock-admin/:trackingNumber",
   auth("super-admin", "main-admin"),
   unblockAdmin
+);
+
+router.patch(
+  "/remove-admin/:trackingNumber",
+  auth("super-admin", "main-admin"),
+  removeAdmin
 );
 
 const AdminRouters = router;

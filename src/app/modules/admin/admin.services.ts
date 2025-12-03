@@ -152,3 +152,22 @@ export const unblockAdminService = async (trackingNumber: number) => {
 
   return unblockUser;
 };
+
+export const removeAdminService = async (trackingNumber: number) => {
+  const user = await User.findOne({ trackingNumber });
+
+  if (!user) {
+    throw new AppError(404, "User not found!");
+  }
+  if (user.role !== "admin") {
+    throw new AppError(400, "Only admin user can be removed!");
+  }
+
+  const removedAdmin = await user.updateOne({
+    $set: {
+      role: "donor",
+    },
+  });
+
+  return removedAdmin;
+};
