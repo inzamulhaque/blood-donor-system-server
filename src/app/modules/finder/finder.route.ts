@@ -17,7 +17,7 @@ router.get(
 );
 
 router.patch(
-  "/find-to-donor",
+  "/finder-to-donor",
   auth("finder"),
   validateRequest(FinderToDonorValidationSchema),
   changeFinderToDonor
