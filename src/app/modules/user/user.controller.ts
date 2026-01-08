@@ -5,6 +5,7 @@ import {
   createNewDonorService,
   createNewFinderService,
   getMeService,
+  getUserDetailsByTrackingNumberService,
   updateUserService,
 } from "./user.services";
 import type { JwtPayload } from "jsonwebtoken";
@@ -55,6 +56,21 @@ export const updateUser = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Update my information successfully!",
+    data: result,
+  });
+});
+
+export const getUserDetailsByTrackingNumber = catchAsync(async (req, res) => {
+  const { trackingNumber } = req.params;
+
+  const result = await getUserDetailsByTrackingNumberService(
+    Number(trackingNumber)
+  );
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Get user details successfully!",
     data: result,
   });
 });

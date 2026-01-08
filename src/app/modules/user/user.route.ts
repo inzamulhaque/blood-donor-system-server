@@ -8,6 +8,7 @@ import {
   createNewDonor,
   createNewFinder,
   getMe,
+  getUserDetailsByTrackingNumber,
   updateUser,
 } from "./user.controller";
 import auth from "../../middlewares/auth";
@@ -33,6 +34,13 @@ router.patch(
   auth("admin", "donor", "finder"),
   validateRequest(UpdateUserValidationSchema),
   updateUser
+);
+
+router.get(
+  "/user/:trackingNumber",
+  auth("admin", "super-admin"),
+
+  getUserDetailsByTrackingNumber
 );
 
 const UserRouters = router;

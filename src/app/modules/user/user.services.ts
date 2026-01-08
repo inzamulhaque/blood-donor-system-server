@@ -245,3 +245,33 @@ export const updateUserService = async (
     console.log(error);
   }
 };
+
+export const getUserDetailsByTrackingNumberService = async (
+  trackingNumber: number
+) => {
+  const user = await User.findOne({
+    trackingNumber,
+  });
+
+  if (!user) {
+    throw new AppError(401, "User not found!");
+  }
+
+  let otherData: any;
+
+  if (user.role === "donor" || user.role === "admin") {
+    otherData = await Donor.findOne({
+      trackingNumber: user.trackingNumber,
+    });
+  }
+
+  if (user.role === "finder") {
+    otherData = await Finder.findOne({
+      trackingNumber: user.trackingNumber,
+    });
+  }
+
+  const { password, ...restData } = user.toObject();
+
+  return { ...restData, ...otherData };
+};
