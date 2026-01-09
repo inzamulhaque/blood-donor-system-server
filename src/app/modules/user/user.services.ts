@@ -271,6 +271,8 @@ export const getUserDetailsByTrackingNumberService = async (
     });
   }
 
+  otherData = otherData.toObject();
+
   const { password, ...restData } = user.toObject();
 
   return { ...restData, ...otherData };
