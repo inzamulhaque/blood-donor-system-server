@@ -6,7 +6,7 @@ import Donor from "../donor/donor.model";
 
 export const getAllUserService = async (query: Record<string, unknown>) => {
   const users = new QueryBuilder(User.find(), query)
-    .search(["name"])
+    .search(["name", "role"])
     .filter()
     .sort()
     .paginate()
@@ -40,7 +40,7 @@ export const changeDonorRoleToAdminService = async (userEmail: string) => {
 
 export const getAllDonorService = async (query: Record<string, unknown>) => {
   const donor = new QueryBuilder(Donor.find(), query)
-    .search(["name", "role"])
+    .search(["name"])
     .filter()
     .sort()
     .paginate()
