@@ -18,17 +18,3 @@ const handleZodError = (err: ZodError): IGenericErrorResponse => {
 };
 
 export default handleZodError;
-
-/*
-    [
-        {
-            "expected": "number",  
-            "code": "invalid_type",
-            "path": [
-            "body",
-            "otp"
-            ],
-            "message": "OTP is required"
-        }
-    ]
- */

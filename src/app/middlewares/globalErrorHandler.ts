@@ -21,6 +21,16 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     },
   ];
 
+  if (err instanceof Error) {
+    message = err?.message;
+    errorSources = [
+      {
+        path: "",
+        message: err?.message,
+      },
+    ];
+  }
+
   if (err instanceof ZodError) {
     const simplifiedError = handleZodError(err);
 
@@ -59,16 +69,6 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
 
   if (err instanceof AppError) {
     statusCode = err?.statusCode;
-    message = err?.message;
-    errorSources = [
-      {
-        path: "",
-        message: err?.message,
-      },
-    ];
-  }
-
-  if (err instanceof Error) {
     message = err?.message;
     errorSources = [
       {
