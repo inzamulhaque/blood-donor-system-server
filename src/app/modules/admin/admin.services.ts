@@ -40,7 +40,7 @@ export const changeDonorRoleToAdminService = async (userEmail: string) => {
 
 export const getAllDonorService = async (query: Record<string, unknown>) => {
   const donor = new QueryBuilder(Donor.find(), query)
-    .search(["name"])
+    .search(["name", "role"])
     .filter()
     .sort()
     .paginate()
