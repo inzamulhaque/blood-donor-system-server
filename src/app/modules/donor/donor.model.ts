@@ -38,7 +38,7 @@ const donorSchema = new Schema<IDonor>(
       unique: true,
       minlength: 6,
       maxlength: 6,
-      ref: "User",
+      sparse: true,
     },
     lastDonateDate: {
       type: Date,

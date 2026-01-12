@@ -16,7 +16,11 @@ export const addNewDonorService = async (
     throw new AppError(409, "Donor already exists!");
   }
 
-  const result = await Donor.create({ ...payload, addedBy: trackingNumber });
+  const result = await Donor.create({
+    ...payload,
+    accountVisibility: "private",
+    addedBy: trackingNumber,
+  });
   return result;
 };
 
