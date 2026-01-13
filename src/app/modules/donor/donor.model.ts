@@ -36,8 +36,8 @@ const donorSchema = new Schema<IDonor>(
     trackingNumber: {
       type: Number,
       unique: true,
-      minlength: 6,
-      maxlength: 6,
+      min: 100000,
+      max: 999999,
       sparse: true,
     },
     lastDonateDate: {

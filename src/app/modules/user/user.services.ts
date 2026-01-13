@@ -167,7 +167,7 @@ export const getMeService = async (payload: JwtPayload) => {
 
   let otherInfo: any = {};
 
-  if (user?.role === "donor") {
+  if (user?.role === "donor" || user?.role === "admin") {
     otherInfo = await Donor.findOne({
       trackingNumber: payload.trackingNumber,
       isDeleted: false,
