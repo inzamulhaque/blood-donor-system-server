@@ -7,6 +7,8 @@ import {
   changeDonorRoleToAdminService,
   getAllDonorService,
   getAllUserService,
+  getDonorCountByBloodGroupService,
+  getTotalAdminCountService,
   getTotalDonorAndFinderCountService,
   removeAdminService,
   unblockAdminService,
@@ -138,6 +140,28 @@ export const getTotalDonorAndFinderCount = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Total donor and finder count retrieved successfully!",
+    data: result,
+  });
+});
+
+export const getTotalAdminCount = catchAsync(async (req, res) => {
+  const result = await getTotalAdminCountService();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Total admin count retrieved successfully!",
+    data: result,
+  });
+});
+
+export const getDonorCountByBloodGroup = catchAsync(async (req, res) => {
+  const result = await getDonorCountByBloodGroupService();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Donor count by blood group retrieved successfully!",
     data: result,
   });
 });

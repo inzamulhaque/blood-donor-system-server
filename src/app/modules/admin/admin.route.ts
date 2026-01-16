@@ -6,6 +6,8 @@ import {
   changeDonorRoleToAdmin,
   getAllDonor,
   getAllUser,
+  getDonorCountByBloodGroup,
+  getTotalAdminCount,
   getTotalDonorAndFinderCount,
   removeAdmin,
   unblockAdmin,
@@ -58,6 +60,14 @@ router.get(
   "/donor-and-finder-count",
   auth("admin", "super-admin"),
   getTotalDonorAndFinderCount
+);
+
+router.get("/admin-count", auth("super-admin"), getTotalAdminCount);
+
+router.get(
+  "/donor-count-by-blood-group",
+  auth("admin", "super-admin"),
+  getDonorCountByBloodGroup
 );
 
 const AdminRouters = router;

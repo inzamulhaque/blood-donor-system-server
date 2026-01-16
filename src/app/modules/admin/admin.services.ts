@@ -171,3 +171,30 @@ export const getTotalDonorAndFinderCountService = async () => {
 
   return { totalDonor, totalFinder };
 };
+
+export const getTotalAdminCountService = async () => {
+  const totalAdmin = await User.countDocuments({ role: "admin" });
+
+  return { totalAdmin };
+};
+
+export const getDonorCountByBloodGroupService = async () => {
+  const bloodGroupCounts = await Donor.aggregate([
+    {
+      $group: {
+        _id: "$bloodGroup",
+        count: { $sum: 1 },
+      },
+    },
+  ]);
+
+  const result = bloodGroupCounts.reduce(
+    (acc: Record<string, number>, curr) => {
+      acc[curr._id] = curr.count;
+      return acc;
+    },
+    {}
+  );
+
+  return result;
+};
