@@ -30,6 +30,20 @@ export const signin = catchAsync(async (req, res) => {
   });
 });
 
+export const signout = catchAsync(async (req, res) => {
+  res.clearCookie("refreshToken", {
+    secure: config.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "none",
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "User is logged out successfully!",
+  });
+});
+
 export const changePassword = catchAsync(async (req, res) => {
   const trackingNumber = req.user?.trackingNumber;
   const payload = { ...req.body, trackingNumber };

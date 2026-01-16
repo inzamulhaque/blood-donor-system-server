@@ -15,6 +15,7 @@ import {
   resendOtp,
   resetPassword,
   signin,
+  signout,
   verifyingOtp,
 } from "./auth.controller";
 import auth from "../../middlewares/auth";
@@ -22,6 +23,8 @@ import auth from "../../middlewares/auth";
 const router = express.Router();
 
 router.post("/signin", validateRequest(SignInValidationSchema), signin);
+
+router.post("/signin", signout);
 
 router.patch(
   "/change-password",
