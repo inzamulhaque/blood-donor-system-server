@@ -3,6 +3,7 @@ import AppError from "../../errors/AppError";
 import User from "../user/user.model";
 import QueryBuilder from "../../builder/QueryBuilder";
 import Donor from "../donor/donor.model";
+import Finder from "../finder/finder.model";
 
 export const getAllUserService = async (query: Record<string, unknown>) => {
   const users = new QueryBuilder(User.find(), query)
@@ -162,4 +163,11 @@ export const removeAdminService = async (trackingNumber: number) => {
   });
 
   return removedAdmin;
+};
+
+export const getTotalDonorAndFinderCountService = async () => {
+  const totalDonor = await Donor.countDocuments();
+  const totalFinder = await Finder.countDocuments();
+
+  return { totalDonor, totalFinder };
 };

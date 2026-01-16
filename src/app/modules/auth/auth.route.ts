@@ -24,7 +24,7 @@ const router = express.Router();
 
 router.post("/signin", validateRequest(SignInValidationSchema), signin);
 
-router.post("/signin", signout);
+router.post("/signout", signout);
 
 router.patch(
   "/change-password",

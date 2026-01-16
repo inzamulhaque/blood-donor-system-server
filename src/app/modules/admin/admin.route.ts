@@ -6,6 +6,7 @@ import {
   changeDonorRoleToAdmin,
   getAllDonor,
   getAllUser,
+  getTotalDonorAndFinderCount,
   removeAdmin,
   unblockAdmin,
   unblockUser,
@@ -52,6 +53,12 @@ router.patch(
 );
 
 router.patch("/remove-admin/:trackingNumber", auth("super-admin"), removeAdmin);
+
+router.get(
+  "/donor-and-finder-count",
+  auth("admin", "super-admin"),
+  getTotalDonorAndFinderCount
+);
 
 const AdminRouters = router;
 

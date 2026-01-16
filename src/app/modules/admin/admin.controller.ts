@@ -7,6 +7,7 @@ import {
   changeDonorRoleToAdminService,
   getAllDonorService,
   getAllUserService,
+  getTotalDonorAndFinderCountService,
   removeAdminService,
   unblockAdminService,
   unblockUserService,
@@ -126,6 +127,17 @@ export const removeAdmin = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Admin removed successfully!",
+    data: result,
+  });
+});
+
+export const getTotalDonorAndFinderCount = catchAsync(async (req, res) => {
+  const result = await getTotalDonorAndFinderCountService();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Total donor and finder count retrieved successfully!",
     data: result,
   });
 });
