@@ -42,10 +42,10 @@ export const addDonateDateService = async (
   // today date
   const now = new Date();
 
-  const [day, month, year] = payload?.date?.split("-");
+  // const [day, month, year] = payload?.date?.split("-");
 
   // donate date
-  const donateDate = new Date(`${year}-${month}-${day}`);
+  const donateDate = new Date(payload?.date);
 
   // this date already exist in DB
   const findInDB = await DonateDate.findOne({
