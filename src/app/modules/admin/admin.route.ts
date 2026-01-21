@@ -4,6 +4,7 @@ import {
   blockAdmin,
   blockUser,
   changeDonorRoleToAdmin,
+  findDonorForMakeAdmin,
   getAllDonor,
   getAllUser,
   getDonorCountByBloodGroup,
@@ -23,7 +24,7 @@ router.get("/all-users", auth("super-admin", "admin"), getAllUser);
 router.patch(
   "/change-donor-to-admin",
   auth("super-admin"),
-  changeDonorRoleToAdmin
+  changeDonorRoleToAdmin,
 );
 
 router.get("/all-donor", auth("super-admin", "admin"), getAllDonor);
@@ -32,26 +33,26 @@ router.patch(
   "/block-user/:trackingNumber",
   auth("super-admin", "admin"),
   validateRequest(BlockingUserValidationSchema),
-  blockUser
+  blockUser,
 );
 
 router.patch(
   "/unblock-user/:trackingNumber",
   auth("super-admin", "admin"),
-  unblockUser
+  unblockUser,
 );
 
 router.patch(
   "/block-admin/:trackingNumber",
   auth("super-admin"),
   validateRequest(BlockingUserValidationSchema),
-  blockAdmin
+  blockAdmin,
 );
 
 router.patch(
   "/unblock-admin/:trackingNumber",
   auth("super-admin"),
-  unblockAdmin
+  unblockAdmin,
 );
 
 router.patch("/remove-admin/:trackingNumber", auth("super-admin"), removeAdmin);
@@ -59,7 +60,7 @@ router.patch("/remove-admin/:trackingNumber", auth("super-admin"), removeAdmin);
 router.get(
   "/donor-and-finder-count",
   auth("admin", "super-admin"),
-  getTotalDonorAndFinderCount
+  getTotalDonorAndFinderCount,
 );
 
 router.get("/admin-count", auth("super-admin"), getTotalAdminCount);
@@ -67,8 +68,10 @@ router.get("/admin-count", auth("super-admin"), getTotalAdminCount);
 router.get(
   "/donor-count-by-blood-group",
   auth("admin", "super-admin"),
-  getDonorCountByBloodGroup
+  getDonorCountByBloodGroup,
 );
+
+router.get("/get-single-donor", auth("super-admin"), findDonorForMakeAdmin);
 
 const AdminRouters = router;
 

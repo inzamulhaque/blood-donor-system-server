@@ -5,6 +5,7 @@ import {
   blockAdminService,
   blockUserService,
   changeDonorRoleToAdminService,
+  findDonorForMakeAdminService,
   getAllDonorService,
   getAllUserService,
   getDonorCountByBloodGroupService,
@@ -64,7 +65,7 @@ export const blockUser = catchAsync(async (req, res) => {
   const result = await blockUserService(
     Number(trackingNumber),
     Number(adminTrackingNumber),
-    reason
+    reason,
   );
 
   sendResponse(res, {
@@ -96,7 +97,7 @@ export const blockAdmin = catchAsync(async (req, res) => {
   const result = await blockAdminService(
     Number(trackingNumber),
     Number(superAdminTrackingNumber),
-    reason
+    reason,
   );
 
   sendResponse(res, {
@@ -162,6 +163,17 @@ export const getDonorCountByBloodGroup = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Donor count by blood group retrieved successfully!",
+    data: result,
+  });
+});
+
+export const findDonorForMakeAdmin = catchAsync(async (req, res) => {
+  const result = await findDonorForMakeAdminService(req.query);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Donor found successfully!",
     data: result,
   });
 });

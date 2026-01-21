@@ -33,7 +33,7 @@ export const changeDonorRoleToAdminService = async (userEmail: string) => {
 
   const updated = await user.updateOne(
     { $set: { role: "admin" } },
-    { new: true }
+    { new: true },
   );
 
   return updated;
@@ -56,7 +56,7 @@ export const getAllDonorService = async (query: Record<string, unknown>) => {
 export const blockUserService = async (
   trackingNumber: number,
   adminTrackingNumber: number,
-  reason: string
+  reason: string,
 ) => {
   const user = await User.findOne({ trackingNumber });
 
@@ -103,7 +103,7 @@ export const unblockUserService = async (trackingNumber: number) => {
 export const blockAdminService = async (
   trackingNumber: number,
   adminTrackingNumber: number,
-  reason: string
+  reason: string,
 ) => {
   const user = await User.findOne({ trackingNumber });
 
@@ -193,8 +193,52 @@ export const getDonorCountByBloodGroupService = async () => {
       acc[curr._id] = curr.count;
       return acc;
     },
-    {}
+    {},
   );
 
   return result;
+};
+
+export const findDonorForMakeAdminService = async (payload: {
+  email?: string;
+  phoneNumber?: string;
+  role: "donor";
+}) => {
+  const { email, phoneNumber, role } = payload || {};
+  let donor;
+
+  if (email) {
+    donor = await Donor.findOne({
+      email,
+    });
+  }
+
+  if (phoneNumber) {
+    donor = await Donor.findOne({
+      phoneNumber,
+    });
+  }
+
+  if (!donor) {
+    throw new AppError(404, "Donor not found!");
+  }
+
+  const { trackingNumber, ...donorOtherInfo } = donor.toObject();
+
+  const user = await User.findOne({
+    trackingNumber,
+    role,
+  });
+
+  if (!user) {
+    throw new AppError(404, "User not found!");
+  }
+
+  const { password, ...userOtherInfo } = user.toObject();
+
+  return {
+    ...userOtherInfo,
+    trackingNumber,
+    ...donorOtherInfo,
+  };
 };
