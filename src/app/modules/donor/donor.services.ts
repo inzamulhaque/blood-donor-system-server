@@ -134,7 +134,7 @@ export const addDonateDateService = async (
 export const getMyDonateDateListService = async (trackingNumber: number) => {
   const donor = await Donor.findOne({
     trackingNumber,
-  }).sort({ date: -1 });
+  });
 
   if (!donor) {
     throw new AppError(401, "Donor not found!");
@@ -142,7 +142,7 @@ export const getMyDonateDateListService = async (trackingNumber: number) => {
 
   const donateDates = await DonateDate.find({
     donorId: donor._id,
-  });
+  }).sort({ date: -1 });
 
   return donateDates;
 };
