@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 export const addNewDonorService = async (
   payload: IDonor,
-  trackingNumber: number
+  trackingNumber: number,
 ) => {
   const isDonorExist = await Donor.findOne({
     phoneNumber: payload.phoneNumber,
@@ -26,7 +26,7 @@ export const addNewDonorService = async (
 
 export const addDonateDateService = async (
   payload: { date: string; note?: string },
-  trackingNumber: number
+  trackingNumber: number,
 ) => {
   // find donor
   const donor = await Donor.findOne({
@@ -105,7 +105,7 @@ export const addDonateDateService = async (
       ],
       {
         session,
-      }
+      },
     );
 
     const addDonateDate = await DonateDate.create(
@@ -116,7 +116,7 @@ export const addDonateDateService = async (
           note: payload?.note,
         },
       ],
-      { session }
+      { session },
     );
 
     await session.commitTransaction();
@@ -134,7 +134,7 @@ export const addDonateDateService = async (
 export const getMyDonateDateListService = async (trackingNumber: number) => {
   const donor = await Donor.findOne({
     trackingNumber,
-  });
+  }).sort({ date: -1 });
 
   if (!donor) {
     throw new AppError(401, "Donor not found!");

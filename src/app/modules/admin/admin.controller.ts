@@ -168,7 +168,9 @@ export const getDonorCountByBloodGroup = catchAsync(async (req, res) => {
 });
 
 export const findDonorForMakeAdmin = catchAsync(async (req, res) => {
-  const result = await findDonorForMakeAdminService(req.query);
+  const result = await findDonorForMakeAdminService(
+    req.query as { role: "donor" },
+  );
 
   sendResponse(res, {
     statusCode: 200,
