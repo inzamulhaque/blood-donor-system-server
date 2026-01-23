@@ -1,5 +1,6 @@
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
+import type { TBloodGroup, TUpozila } from "../donor/donor.interface";
 
 import {
   changeFinderToDonorService,
@@ -8,7 +9,12 @@ import {
 import type { JwtPayload } from "jsonwebtoken";
 
 export const findDonor = catchAsync(async (req, res) => {
-  const result = await findDonorService(req.body);
+  const result = await findDonorService(
+    req.query as {
+      bloodGroup: TBloodGroup;
+      upozila: TUpozila;
+    },
+  );
 
   sendResponse(res, {
     statusCode: 200,
