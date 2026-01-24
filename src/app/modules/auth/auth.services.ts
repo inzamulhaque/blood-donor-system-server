@@ -28,20 +28,20 @@ export const signinService = async (credentials: ISignin) => {
   if (user?.blockStatus?.isBlocked) {
     throw new AppError(
       403,
-      "Your account has been blocked. Please contact support!"
+      "Your account has been blocked. Please contact support!",
     );
   }
 
   if (user.accountStatus === "inactive") {
     throw new AppError(
       403,
-      "Your account is inactive. Please activate your account by verifying your email!"
+      "Your account is inactive. Please activate your account by verifying your email or reset password!",
     );
   }
 
   const isPasswordValid = await bcrypt.compare(
     credentials.password,
-    user.password
+    user.password,
   );
 
   if (!isPasswordValid) {
@@ -54,7 +54,7 @@ export const signinService = async (credentials: ISignin) => {
       role: user.role,
     },
     config.JWT_ACCESS_SECRET,
-    config.JWT_ACCESS_EXPIRES_IN
+    config.JWT_ACCESS_EXPIRES_IN,
   );
 
   const refreshToken = createToken(
@@ -63,7 +63,7 @@ export const signinService = async (credentials: ISignin) => {
       role: user.role,
     },
     config.JWT_REFRESH_SECRET,
-    config.JWT_REFRESH_EXPIRES_IN
+    config.JWT_REFRESH_EXPIRES_IN,
   );
 
   return {
@@ -88,7 +88,7 @@ export const changePasswordService = async (payload: {
 
   const isOldPasswordValid = await bcrypt.compare(
     payload.oldPassword,
-    user.password
+    user.password,
   );
 
   if (!isOldPasswordValid) {
@@ -97,13 +97,13 @@ export const changePasswordService = async (payload: {
 
   const oldAndNewPasswordSame = await bcrypt.compare(
     payload.newPassword,
-    user.password
+    user.password,
   );
 
   if (oldAndNewPasswordSame) {
     throw new AppError(
       400,
-      "New password must be different from the old password!"
+      "New password must be different from the old password!",
     );
   }
 
@@ -118,13 +118,13 @@ export const changePasswordService = async (payload: {
   if (isPasswordusedBefore) {
     throw new AppError(
       400,
-      "You cannot use a previously used password. Please choose a different password!"
+      "You cannot use a previously used password. Please choose a different password!",
     );
   }
 
   const hashedNewPassword = await bcrypt.hash(
     payload.newPassword,
-    Number(config.BCRYPT_SALT_ROUNDS)
+    Number(config.BCRYPT_SALT_ROUNDS),
   );
 
   const session = await mongoose.startSession();
@@ -134,12 +134,12 @@ export const changePasswordService = async (payload: {
 
     const updatedPassword = await user.updateOne(
       { $set: { password: hashedNewPassword } },
-      { session }
+      { session },
     );
 
     await OldPassword.deleteOne(
       { trackingNumber: payload.trackingNumber },
-      { session }
+      { session },
     );
 
     await OldPassword.create(
@@ -149,7 +149,7 @@ export const changePasswordService = async (payload: {
           oldPassword: user.password,
         },
       ],
-      { session }
+      { session },
     );
 
     await session.commitTransaction();
@@ -174,7 +174,7 @@ export const changePasswordService = async (payload: {
 
 export const verifyingOtpService = async (
   trackingNumber: number,
-  otp: number
+  otp: number,
 ) => {
   const otpData = await Otp.findOne({
     trackingNumber,
@@ -208,7 +208,7 @@ export const verifyingOtpService = async (
     const updateAccountStatus = await User.updateOne(
       { trackingNumber, isDeleted: false },
       { $set: { accountStatus: "active" } },
-      { session }
+      { session },
     );
 
     await session.commitTransaction();
@@ -250,7 +250,7 @@ export const resendOtpService = async (trackingNumber: number) => {
           otpFor: "resend-otp",
         },
       ],
-      { session }
+      { session },
     );
 
     await session.commitTransaction();
@@ -263,7 +263,7 @@ export const resendOtpService = async (trackingNumber: number) => {
     const sendEmailResponse = await sendEmail(
       user.email,
       emailSubject,
-      emailBody
+      emailBody,
     );
 
     return sendEmailResponse;
@@ -297,7 +297,7 @@ export const forgotPasswordService = async (email: string) => {
           otpFor: "password-reset",
         },
       ],
-      { session }
+      { session },
     );
 
     await session.commitTransaction();
@@ -320,7 +320,7 @@ export const forgotPasswordService = async (email: string) => {
 export const resetPasswordService = async (
   trackingNumber: number,
   otp: number,
-  newPassword: string
+  newPassword: string,
 ) => {
   const otpData = await Otp.findOne({
     trackingNumber,
@@ -353,13 +353,13 @@ export const resetPasswordService = async (
 
   const oldAndNewPasswordSame = await bcrypt.compare(
     newPassword,
-    user.password
+    user.password,
   );
 
   if (oldAndNewPasswordSame) {
     throw new AppError(
       400,
-      "New password must be different from the old password!"
+      "New password must be different from the old password!",
     );
   }
 
@@ -374,13 +374,13 @@ export const resetPasswordService = async (
   if (isPasswordusedBefore) {
     throw new AppError(
       400,
-      "You cannot use a previously used password. Please choose a different password!"
+      "You cannot use a previously used password. Please choose a different password!",
     );
   }
 
   const hashedNewPassword = await bcrypt.hash(
     newPassword,
-    Number(config.BCRYPT_SALT_ROUNDS)
+    Number(config.BCRYPT_SALT_ROUNDS),
   );
 
   const session = await mongoose.startSession();
@@ -391,12 +391,12 @@ export const resetPasswordService = async (
 
     const updatePassword = await user.updateOne(
       { $set: { password: hashedNewPassword, accountStatus: "active" } },
-      { session }
+      { session },
     );
 
     await OldPassword.deleteOne(
       { trackingNumber: trackingNumber },
-      { session }
+      { session },
     );
 
     await OldPassword.create(
@@ -406,7 +406,7 @@ export const resetPasswordService = async (
           oldPassword: user.password,
         },
       ],
-      { session }
+      { session },
     );
 
     await Otp.deleteOne({ trackingNumber, otp }, { session });
@@ -437,7 +437,7 @@ export const refreshTokenService = async (token: string) => {
   if (user?.blockStatus?.isBlocked) {
     throw new AppError(
       403,
-      "Your account has been blocked. Please contact support!"
+      "Your account has been blocked. Please contact support!",
     );
   }
 
@@ -449,7 +449,7 @@ export const refreshTokenService = async (token: string) => {
   const newAccessToken = createToken(
     jwtPayload,
     config.JWT_ACCESS_SECRET,
-    config.JWT_ACCESS_EXPIRES_IN
+    config.JWT_ACCESS_EXPIRES_IN,
   );
 
   return newAccessToken;
