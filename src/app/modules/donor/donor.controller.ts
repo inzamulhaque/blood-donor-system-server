@@ -4,6 +4,7 @@ import {
   addDonateDateService,
   addNewDonorService,
   getMyDonateDateListService,
+  getTimesDonatedService,
 } from "./donor.services";
 
 export const addNewDonor = catchAsync(async (req, res) => {
@@ -40,6 +41,18 @@ export const getMyDonateDateList = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Donate date list fetched successfully!",
+    data: result,
+  });
+});
+
+export const getTimesDonated = catchAsync(async (req, res) => {
+  const trackingNumber = (req.user as any)?.trackingNumber;
+  const result = await getTimesDonatedService(trackingNumber);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Donate date count fetched successfully!",
     data: result,
   });
 });

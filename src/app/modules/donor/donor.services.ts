@@ -146,3 +146,17 @@ export const getMyDonateDateListService = async (trackingNumber: number) => {
 
   return donateDates;
 };
+
+export const getTimesDonatedService = async (trackingNumber: number) => {
+  const donor = await Donor.findOne({
+    trackingNumber,
+  });
+
+  if (!donor) {
+    throw new AppError(401, "Donor not found!");
+  }
+
+  const donateCount = await DonateDate.countDocuments({ donorId: donor._id });
+
+  return donateCount;
+};

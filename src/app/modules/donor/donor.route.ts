@@ -8,6 +8,7 @@ import {
   addNewDonor,
   adDonateDate,
   getMyDonateDateList,
+  getTimesDonated,
 } from "./donor.controller";
 import auth from "../../middlewares/auth";
 
@@ -17,17 +18,19 @@ router.post(
   "/add-donor",
   auth("super-admin", "admin"),
   validateRequest(DonorValidationSchema),
-  addNewDonor
+  addNewDonor,
 );
 
 router.post(
   "/donate-date",
   auth("admin", "donor"),
   validateRequest(DonateDateValidationSchema),
-  adDonateDate
+  adDonateDate,
 );
 
 router.get("/donate-date", auth("admin", "donor"), getMyDonateDateList);
+
+router.get("/donate-count", auth("admin", "donor"), getTimesDonated);
 
 const DonorRoutes = router;
 export default DonorRoutes;
