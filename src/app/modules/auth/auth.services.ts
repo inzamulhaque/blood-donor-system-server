@@ -321,7 +321,7 @@ export const forgotPasswordService = async (email: string) => {
 
     const emailInfo = await sendEmail(user.email, emailSubject, emailBody);
 
-    return emailInfo;
+    return { emailInfo, user: user.trackingNumber };
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
