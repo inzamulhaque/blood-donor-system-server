@@ -14,6 +14,7 @@ import config from "../../../config";
 import { OldPassword, Otp } from "./auth.model";
 import mongoose from "mongoose";
 import sendEmail from "../../utils/sendEmail";
+import Donor from "../donor/donor.model";
 
 export const signinService = async (credentials: ISignin) => {
   const user = await User.findOne({
@@ -180,7 +181,11 @@ export const verifyingOtpService = async (
     trackingNumber,
   });
 
-  if (!otpData) {
+  const userData = await User.findOne({
+    trackingNumber,
+  });
+
+  if (!otpData || !userData) {
     throw new AppError(400, "User not found!");
   }
 
@@ -210,6 +215,14 @@ export const verifyingOtpService = async (
       { $set: { accountStatus: "active" } },
       { session },
     );
+
+    if (userData.role === "donor") {
+      await Donor.updateOne(
+        { trackingNumber, isDeleted: false },
+        { $set: { availability: true } },
+        { session },
+      );
+    }
 
     await session.commitTransaction();
     await session.endSession();
