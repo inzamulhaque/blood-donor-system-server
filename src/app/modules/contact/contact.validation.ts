@@ -11,7 +11,8 @@ export const ContactValidationSchema = z.object({
 
     phoneNumber: z
       .string("Phone number is required")
-      .regex(/^[0-9]{11}$/, "Phone number must be 11 digits"),
+      .regex(/^[0-9]{11}$/, "Phone number must be 11 digits")
+      .optional(),
 
     subject: z
       .string()
