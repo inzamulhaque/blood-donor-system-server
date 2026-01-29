@@ -4,4 +4,5 @@ export interface IMessage {
   phoneNumber?: string;
   subject: string;
   message: string;
+  isReaded?: boolean;
 }
