@@ -4,6 +4,7 @@ import UserRouters from "../app/modules/user/user.route";
 import AuthRouters from "../app/modules/auth/auth.route";
 import FinderRouters from "../app/modules/finder/finder.route";
 import AdminRouters from "../app/modules/admin/admin.route";
+import ContactRoutes from "../app/modules/contact/contact.route";
 
 const router = Router();
 
@@ -27,6 +28,10 @@ const moduleRouters = [
   {
     path: "/admins",
     route: AdminRouters,
+  },
+  {
+    path: "/contact",
+    route: ContactRoutes,
   },
 ];
 
