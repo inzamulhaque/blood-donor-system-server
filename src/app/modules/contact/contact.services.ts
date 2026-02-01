@@ -9,7 +9,12 @@ export const addNewMessageService = async (payload: IMessage) => {
 };
 
 export const getAllMessageService = async (query: Record<string, unknown>) => {
-  const messages = new QueryBuilder(Contact.find(), query).paginate();
+  const messages = new QueryBuilder(Contact.find(), {
+    ...query,
+    sort: "isReaded",
+  })
+    .paginate()
+    .sort();
 
   const result = await messages.modelQuery;
   const meta = await messages.countTotal();
